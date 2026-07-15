@@ -1,43 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Bike,
-  Store,
-  Wallet,
-  Flame,
-  Star,
-  ShoppingBag,
-  Clock,
-  MapPin,
-  Phone,
-  ChevronRight,
-  Languages,
-  Sparkles,
+  Bike, Store, Wallet, Flame, Star, ShoppingBag, Clock, MapPin, Phone,
+  ChevronRight, Sparkles,
 } from "lucide-react";
 
 import heroFood from "@/assets/hero-food.jpg";
 import dishShan from "@/assets/dish-shan.jpg";
 import dishMohinga from "@/assets/dish-mohinga.jpg";
 import dishLahpet from "@/assets/dish-lahpet.jpg";
+import { AppHeader } from "@/components/AppHeader";
+import { useApp } from "@/lib/mgwin-store";
 
 export const Route = createFileRoute("/")({
   component: Landing,
-  head: () => ({
-    meta: [
-      { title: "Mg Win — နမ့်စန်မြို့ရဲ့ အစားအသောက် ပို့ဆောင်ရေး" },
-      { name: "description", content: "Order hot local food from Namsang restaurants. Pay by cash, KBZPay or Wave Pay. Delivered by motorbike." },
-    ],
-  }),
 });
 
-type Lang = "mm" | "en";
 const t = {
-  nav: { menu: { mm: "မီနူး", en: "Menu" }, riders: { mm: "ဆိုင်ကယ်သမား", en: "Riders" }, restaurants: { mm: "ဆိုင်များ", en: "Restaurants" }, about: { mm: "အကြောင်း", en: "About" } },
   hero: {
     tag: { mm: "နမ့်စန်မြို့ ၏ ကိုယ်ပိုင် အစားအသောက်", en: "Made in Namsang, southern Shan State" },
     title_mm: "ပူပူနွေးနွေး ထမင်းတစ်ပွဲ", title_mm2: "အိမ်တိုင်ရာရောက်",
     title_en: "Hot food from the market,", title_en2: "on your doorstep.",
-    sub: { mm: "နမ့်စန်မြို့ရဲ့ အကောင်းဆုံး ဆိုင်တွေက အစားအသောက်တွေကို ငွေသား၊ KBZPay နဲ့ Wave Pay ဖြင့် မှာယူပါ။", en: "The best kitchens in Namsang, delivered by motorbike. Pay by cash, KBZPay or Wave Pay." },
+    sub: { mm: "နမ့်စန်ရဲ့ အကောင်းဆုံး ဆိုင်တွေက အစားအသောက်တွေကို ငွေသား၊ KBZPay နဲ့ Wave Pay ဖြင့် မှာယူပါ။", en: "The best kitchens in Namsang, delivered by motorbike. Pay by cash, KBZPay or Wave Pay." },
     order: { mm: "ယခုပဲ မှာယူမည်", en: "Order now" },
     partner: { mm: "ဆိုင်ရှင်အဖြစ် ပါဝင်ရန်", en: "Become a partner" },
   },
@@ -55,83 +38,29 @@ const t = {
   ],
   how: { mm: "ဘယ်လိုအလုပ်လုပ်လဲ", en: "How it works" },
   steps: [
-    { i: Store, mm: "ဆိုင်ရွေးပါ", en: "Pick a stall", d_mm: "ဒေသခံ ဆိုင်တွေရဲ့ မီနူးကို ကြည့်ရှုပါ။", d_en: "Browse menus from local kitchens near you." },
+    { i: Store, mm: "ဆိုင်ရွေးပါ", en: "Pick a stall", d_mm: "ဒေသခံဆိုင်တွေရဲ့ မီနူးကို ကြည့်ပါ။", d_en: "Browse menus from local kitchens near you." },
     { i: ShoppingBag, mm: "မှာယူပါ", en: "Place order", d_mm: "မှတ်ချက်ရေးပါ — 'အစပ်နည်းနည်း' လိုမျိုး။", d_en: "Add notes like 'not spicy' or 'extra chili'." },
-    { i: Wallet, mm: "ငွေပေးချေပါ", en: "Pay easy", d_mm: "ငွေသား၊ KBZPay သို့မဟုတ် Wave Pay ဖြင့် ပေးချေပါ။", d_en: "Cash on delivery, KBZPay, or Wave Pay." },
+    { i: Wallet, mm: "ငွေပေးချေပါ", en: "Pay easy", d_mm: "ငွေသား၊ KBZPay သို့မဟုတ် Wave Pay ဖြင့်။", d_en: "Cash on delivery, KBZPay, or Wave Pay." },
     { i: Bike, mm: "ရရှိပါ", en: "Get it hot", d_mm: "ဆိုင်ကယ်သမား ၂၀ မိနစ်အတွင်း ပို့ဆောင်ပါလိမ့်မည်။", d_en: "Motorbike rider brings it in ~20 minutes." },
   ],
   pay: { mm: "လွယ်ကူသော ငွေပေးချေမှုနည်းလမ်းများ", en: "Pay the way Namsang pays" },
-  payDesc: { mm: "အပြည်ပြည်ဆိုင်ရာ ဘဏ်ကတ်တွေ မလိုပါ။ သင်လက်ရှိသုံးနေတဲ့ နည်းလမ်းတွေအားလုံး လက်ခံပါတယ်။", en: "No international cards required. We accept every payment method your neighbours already use." },
+  payDesc: { mm: "အပြည်ပြည်ဆိုင်ရာ ဘဏ်ကတ်တွေ မလိုပါ။ သင်လက်ရှိသုံးနေတဲ့ နည်းလမ်းတွေအားလုံး လက်ခံပါတယ်။", en: "No international cards required. Every payment method your neighbours already use." },
   cta_title: { mm: "အစပြုရန် အသင့်ဖြစ်ပြီလား", en: "Hungry yet?" },
-  cta_sub: { mm: "Mg Win ကို ဖုန်းထဲမှာ ထည့်ပြီး ပထမဆုံး မှာယူမှုအတွက် ၂၀% လျှော့စျေးရယူပါ။", en: "Get 20% off your first order when you sign up today." },
-  cta_btn: { mm: "အသုံးပြုသူအဖြစ် စတင်ရန်", en: "Start ordering" },
+  cta_sub: { mm: "Mg Win နဲ့ ပထမဆုံး မှာယူမှုအတွက် ၂၀% လျှော့စျေးရယူပါ။", en: "Get 20% off your first order when you sign up today." },
+  cta_btn: { mm: "ဆိုင်များကို ကြည့်မည်", en: "Browse restaurants" },
   cta_btn2: { mm: "ဆိုင်ရှင်လား? ဒီမှာ", en: "Own a stall? Join here" },
   foot: { mm: "နမ့်စန်, တောင်ပိုင်းရှမ်းပြည်နယ်", en: "Namsang, southern Shan State" },
 } as const;
 
-function useLang(): [Lang, (l: Lang) => void] {
-  const [lang, setLangState] = useState<Lang>("mm");
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? (localStorage.getItem("mgwin-lang") as Lang | null) : null;
-    if (saved) setLangState(saved);
-  }, []);
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    if (typeof window !== "undefined") localStorage.setItem("mgwin-lang", l);
-    if (typeof document !== "undefined") document.documentElement.lang = l === "mm" ? "my" : "en";
-  };
-  return [lang, setLang];
-}
-
 function Landing() {
-  const [lang, setLang] = useLang();
-  const L = (s: { mm: string; en: string }) => (lang === "mm" ? s.mm : s.en);
+  const { lang, L } = useApp();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* NAV */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-2 group">
-            <div className="relative w-9 h-9 rounded-xl bg-gradient-ember flex items-center justify-center shadow-ember">
-              <Flame className="w-5 h-5 text-primary-foreground" />
-              <div className="absolute inset-0 rounded-xl bg-gradient-ember blur-lg opacity-60 animate-ember-pulse -z-10" />
-            </div>
-            <div className="leading-none">
-              <div className="font-display text-xl tracking-tight">Mg Win</div>
-              <div className="text-[10px] text-muted-foreground tracking-widest uppercase">Namsang eats</div>
-            </div>
-          </a>
-
-          <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-            <a href="#featured" className="hover:text-foreground transition-colors">{L(t.nav.menu)}</a>
-            <a href="#how" className="hover:text-foreground transition-colors">{L(t.nav.restaurants)}</a>
-            <a href="#riders" className="hover:text-foreground transition-colors">{L(t.nav.riders)}</a>
-            <a href="#about" className="hover:text-foreground transition-colors">{L(t.nav.about)}</a>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === "mm" ? "en" : "mm")}
-              className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
-              aria-label="Toggle language"
-            >
-              <Languages className="w-3.5 h-3.5" />
-              {lang === "mm" ? "EN" : "မြန်မာ"}
-            </button>
-            <a
-              href="#cta"
-              className="hidden sm:inline-flex items-center gap-1 rounded-full bg-gradient-ember px-4 py-2 text-sm font-semibold text-primary-foreground shadow-ember hover:scale-105 transition-transform"
-            >
-              {L(t.hero.order)}
-              <ChevronRight className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* HERO */}
-      <section id="top" className="relative">
+      <section className="relative">
         <div className="absolute inset-0 bg-gradient-glow pointer-events-none" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-16 pb-24 md:pt-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center relative">
           <div className="animate-float-up">
@@ -143,14 +72,12 @@ function Landing() {
             <h1 className="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] tracking-tight">
               {lang === "mm" ? (
                 <span className="font-mm">
-                  {t.hero.title_mm}
-                  <br />
+                  {t.hero.title_mm}<br />
                   <span className="text-gradient-ember italic">{t.hero.title_mm2}</span>
                 </span>
               ) : (
                 <>
-                  {t.hero.title_en}
-                  <br />
+                  {t.hero.title_en}<br />
                   <span className="text-gradient-ember italic">{t.hero.title_en2}</span>
                 </>
               )}
@@ -161,10 +88,10 @@ function Landing() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#cta" className="group inline-flex items-center gap-2 rounded-full bg-gradient-ember px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-ember hover:scale-105 transition-transform">
+              <Link to="/restaurants" className="group inline-flex items-center gap-2 rounded-full bg-gradient-ember px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-ember hover:scale-105 transition-transform">
                 {L(t.hero.order)}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
               <a href="#partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
                 <Store className="w-4 h-4" />
                 {L(t.hero.partner)}
@@ -181,14 +108,12 @@ function Landing() {
             </div>
           </div>
 
-          {/* Hero image */}
           <div className="relative animate-float-up" style={{ animationDelay: "0.2s" }}>
             <div className="absolute -inset-8 bg-gradient-ember opacity-20 blur-3xl rounded-full animate-ember-pulse" />
             <div className="relative rounded-3xl overflow-hidden shadow-soft ring-1 ring-border/50">
               <img src={heroFood} alt="Burmese street food at dusk" width={1600} height={1200} className="w-full h-[420px] md:h-[560px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
 
-              {/* Floating order card */}
               <div className="absolute bottom-6 left-6 right-6 md:right-auto md:w-72 rounded-2xl bg-background/85 backdrop-blur-xl border border-border p-4 shadow-ember animate-float-up" style={{ animationDelay: "0.6s" }}>
                 <div className="flex items-center gap-3">
                   <img src={dishShan} alt="" width={48} height={48} loading="lazy" className="w-12 h-12 rounded-xl object-cover" />
@@ -203,7 +128,6 @@ function Landing() {
                 </div>
               </div>
 
-              {/* Rating badge */}
               <div className="absolute top-6 right-6 rounded-full bg-background/85 backdrop-blur-xl border border-border px-3 py-1.5 flex items-center gap-1.5 text-xs font-semibold">
                 <Star className="w-3.5 h-3.5 fill-accent text-accent" /> 4.9
               </div>
@@ -211,7 +135,6 @@ function Landing() {
           </div>
         </div>
 
-        {/* Marquee */}
         <div className="border-y border-border/50 bg-card/30 overflow-hidden py-4">
           <div className="flex whitespace-nowrap animate-marquee">
             {Array.from({ length: 2 }).map((_, k) => (
@@ -229,21 +152,20 @@ function Landing() {
       </section>
 
       {/* FEATURED */}
-      <section id="featured" className="mx-auto max-w-7xl px-4 sm:px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-24">
         <div className="flex items-end justify-between mb-10">
           <div>
             <div className="text-xs uppercase tracking-widest text-accent mb-2">Featured</div>
             <h2 className={`font-display text-4xl md:text-5xl ${lang === "mm" ? "font-mm" : ""}`}>{L(t.featured)}</h2>
           </div>
-          <a href="#" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <Link to="/restaurants" className="hidden sm:inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
             {lang === "mm" ? "အားလုံးကြည့်ရန်" : "View all"} <ChevronRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {t.dishes.map((d, i) => (
-            <article
-              key={i}
+            <Link to="/restaurants" key={i}
               className="group relative rounded-3xl overflow-hidden bg-card border border-border/60 hover:border-primary/60 transition-all hover:-translate-y-1 hover:shadow-ember"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
@@ -269,19 +191,18 @@ function Landing() {
                   <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" /> 1.2 km</span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how" className="relative py-24 bg-card/30 border-y border-border/50">
+      {/* HOW */}
+      <section className="relative py-24 bg-card/30 border-y border-border/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <div className="text-xs uppercase tracking-widest text-accent mb-2">Simple</div>
             <h2 className={`font-display text-4xl md:text-5xl ${lang === "mm" ? "font-mm" : ""}`}>{L(t.how)}</h2>
           </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {t.steps.map((s, i) => {
               const Icon = s.i;
@@ -303,7 +224,7 @@ function Landing() {
       </section>
 
       {/* PAYMENTS + RIDER */}
-      <section id="riders" className="mx-auto max-w-7xl px-4 sm:px-6 py-24 grid md:grid-cols-2 gap-8">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-24 grid md:grid-cols-2 gap-8">
         <div className="rounded-3xl bg-gradient-to-br from-card to-background border border-border p-8 md:p-10 relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
           <div className="relative">
@@ -359,38 +280,27 @@ function Landing() {
       </section>
 
       {/* CTA */}
-      <section id="cta" className="mx-auto max-w-7xl px-4 sm:px-6 pb-24">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-24">
         <div className="relative rounded-[2rem] overflow-hidden bg-gradient-ember p-10 md:p-16 text-center shadow-ember">
           <div className="absolute inset-0 opacity-30" style={{
             backgroundImage: "radial-gradient(circle at 20% 30%, oklch(1 0 0 / 0.3), transparent 40%), radial-gradient(circle at 80% 70%, oklch(0 0 0 / 0.3), transparent 40%)",
           }} />
           <div className="relative">
             <Flame className="w-10 h-10 mx-auto text-primary-foreground mb-4" />
-            <h2 className={`font-display text-4xl md:text-6xl text-primary-foreground ${lang === "mm" ? "font-mm" : ""}`}>
-              {L(t.cta_title)}
-            </h2>
-            <p className={`mt-4 text-primary-foreground/80 max-w-xl mx-auto ${lang === "mm" ? "font-mm" : ""}`}>
-              {L(t.cta_sub)}
-            </p>
+            <h2 className={`font-display text-4xl md:text-6xl text-primary-foreground ${lang === "mm" ? "font-mm" : ""}`}>{L(t.cta_title)}</h2>
+            <p className={`mt-4 text-primary-foreground/80 max-w-xl mx-auto ${lang === "mm" ? "font-mm" : ""}`}>{L(t.cta_sub)}</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
-              <a href="#" className="rounded-full bg-background text-foreground px-7 py-3.5 text-sm font-semibold hover:scale-105 transition-transform">
-                {L(t.cta_btn)}
-              </a>
-              <a id="partner" href="#" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">
-                {L(t.cta_btn2)}
-              </a>
+              <Link to="/restaurants" className="rounded-full bg-background text-foreground px-7 py-3.5 text-sm font-semibold hover:scale-105 transition-transform">{L(t.cta_btn)}</Link>
+              <a id="partner" href="#" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">{L(t.cta_btn2)}</a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer id="about" className="border-t border-border/50 bg-card/30">
+      <footer className="border-t border-border/50 bg-card/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-ember flex items-center justify-center">
-              <Flame className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <div className="w-7 h-7 rounded-lg bg-gradient-ember flex items-center justify-center"><Flame className="w-4 h-4 text-primary-foreground" /></div>
             <span className="font-display text-base text-foreground">Mg Win</span>
             <span className="hidden sm:inline">·</span>
             <span className={`hidden sm:inline ${lang === "mm" ? "font-mm" : ""}`}>{L(t.foot)}</span>
