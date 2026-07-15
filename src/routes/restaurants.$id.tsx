@@ -27,7 +27,7 @@ export const Route = createFileRoute("/restaurants/$id")({
 });
 
 function RestaurantMenu() {
-  const { restaurant, menu } = Route.useLoaderData() as ReturnType<typeof Route.options.loader> extends Promise<infer R> ? R : ReturnType<typeof Route.options.loader>;
+  const { restaurant, menu } = Route.useLoaderData() as { restaurant: Restaurant; menu: MenuItem[] };
   const { lang, L, cart, addToCart, forceReplaceCart, cartCount, cartSubtotal } = useApp();
   const navigate = useNavigate();
   const [added, setAdded] = useState<Record<string, number>>({});
@@ -36,8 +36,8 @@ function RestaurantMenu() {
   const categories = useMemo(() => {
     const seen = new Set<string>();
     return menu
-      .filter((m: (typeof menu)[number]) => { const k = lang === "mm" ? m.category_mm : m.category_en; if (seen.has(k)) return false; seen.add(k); return true; })
-      .map((m: (typeof menu)[number]) => ({ mm: m.category_mm, en: m.category_en }));
+      .filter((m) => { const k = lang === "mm" ? m.category_mm : m.category_en; if (seen.has(k)) return false; seen.add(k); return true; })
+      .map((m) => ({ mm: m.category_mm, en: m.category_en }));
   }, [menu, lang]);
 
   const handleAdd = (menuItemId: string) => {
