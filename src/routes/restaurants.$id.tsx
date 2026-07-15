@@ -3,7 +3,7 @@ import { ArrowLeft, Star, Clock, MapPin, Plus, Check, ShoppingBag } from "lucide
 import { useMemo, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { useApp } from "@/lib/mgwin-store";
-import { formatKs, getRestaurant, getMenuByRestaurant } from "@/lib/mgwin";
+import { formatKs, getRestaurant, getMenuByRestaurant, type Restaurant, type MenuItem } from "@/lib/mgwin";
 
 export const Route = createFileRoute("/restaurants/$id")({
   component: RestaurantMenu,
