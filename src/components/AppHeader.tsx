@@ -14,7 +14,7 @@ export function AppHeader() {
           </div>
           <div className="leading-none">
             <div className="font-display text-xl tracking-tight">Mg Win</div>
-            <div className="text-[10px] text-muted-foreground tracking-widest uppercase">Namsang eats</div>
+            <div className="text-[10px] text-muted-foreground tracking-widest uppercase">NAMSANG FOODIE</div>
           </div>
         </Link>
 
