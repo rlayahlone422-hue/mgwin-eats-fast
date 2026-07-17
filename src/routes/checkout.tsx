@@ -53,7 +53,10 @@ function CheckoutPage() {
   const submit = () => {
     if (!validate()) return;
     setSubmitting(true);
-    const fullAddress = landmark.trim() ? `${address.trim()} · ${landmark.trim()}` : address.trim();
+    const parts = [address.trim()];
+    if (landmark.trim()) parts.push(landmark.trim());
+    if (pin) parts.push(`📍 ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`);
+    const fullAddress = parts.join(" · ");
     const order = placeOrder({ phone: phone.trim(), address: fullAddress, paymentMethod: payment });
     if (order) {
       setTimeout(() => navigate({ to: "/orders/$id", params: { id: order.id } }), 400);
