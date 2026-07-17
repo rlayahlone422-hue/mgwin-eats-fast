@@ -1,10 +1,19 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin, Bike } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPicker, type PickedLocation } from "@/components/MapPicker";
 import { useApp } from "@/lib/mgwin-store";
-import { formatKs, getMenuItem, getRestaurant, type PaymentMethod, PAYMENT_LABELS } from "@/lib/mgwin";
+import {
+  formatKs,
+  getMenuItem,
+  getRestaurant,
+  computeDeliveryFee,
+  haversineKm,
+  NAMSANG_CENTER,
+  type PaymentMethod,
+  PAYMENT_LABELS,
+} from "@/lib/mgwin";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -15,17 +24,25 @@ function CheckoutPage() {
   const { lang, L, cart, cartSubtotal, placeOrder } = useApp();
   const navigate = useNavigate();
   const restaurant = cart.restaurantId ? getRestaurant(cart.restaurantId) : null;
-  const deliveryFee = restaurant?.deliveryFee ?? 0;
-  const total = cartSubtotal + deliveryFee;
 
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [landmark, setLandmark] = useState("");
   const [pin, setPin] = useState<PickedLocation | null>(null);
+  const [addressAutoFilled, setAddressAutoFilled] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const [payment, setPayment] = useState<PaymentMethod>("cash");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ phone?: string; address?: string }>({});
+
+  const { distanceKm, deliveryFee } = useMemo(() => {
+    if (!restaurant) return { distanceKm: null as number | null, deliveryFee: 0 };
+    if (!pin) return { distanceKm: null, deliveryFee: restaurant.deliveryFee };
+    const d = haversineKm(NAMSANG_CENTER, pin);
+    return { distanceKm: d, deliveryFee: computeDeliveryFee(d) };
+  }, [pin, restaurant]);
+
+  const total = cartSubtotal + deliveryFee;
 
   if (!restaurant || cart.lines.length === 0) {
     return (
@@ -55,9 +72,21 @@ function CheckoutPage() {
     setSubmitting(true);
     const parts = [address.trim()];
     if (landmark.trim()) parts.push(landmark.trim());
-    if (pin) parts.push(`📍 ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`);
+    if (pin) {
+      const tail = pin.label
+        ? `📍 ${pin.label} (${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)})`
+        : `📍 ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`;
+      parts.push(tail);
+    }
     const fullAddress = parts.join(" · ");
-    const order = placeOrder({ phone: phone.trim(), address: fullAddress, paymentMethod: payment });
+    const order = placeOrder({
+      phone: phone.trim(),
+      address: fullAddress,
+      paymentMethod: payment,
+      pin: pin ? { lat: pin.lat, lng: pin.lng, label: pin.label ?? null } : null,
+      distanceKm,
+      deliveryFee,
+    });
     if (order) {
       setTimeout(() => navigate({ to: "/orders/$id", params: { id: order.id } }), 400);
     } else {
@@ -85,7 +114,6 @@ function CheckoutPage() {
 
         <div className="grid md:grid-cols-[1fr_320px] gap-8">
           <div className="space-y-6">
-            {/* Delivery details */}
             <section className="rounded-2xl bg-card border border-border p-6">
               <h2 className={`font-semibold text-lg mb-4 flex items-center gap-2 ${lang === "mm" ? "font-mm" : ""}`}>
                 <MapPin className="w-4 h-4 text-primary" /> {L({ mm: "ပို့ဆောင်ရမည့်နေရာ", en: "Delivery details" })}
@@ -115,11 +143,16 @@ function CheckoutPage() {
               </label>
               <textarea
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                onChange={(e) => { setAddress(e.target.value); setAddressAutoFilled(false); }}
                 placeholder={lang === "mm" ? "ဥပမာ: မြို့မလမ်း, အိမ်အနီ, ဗိုလ်ချုပ်ကျောင်း ဘေးမှာ" : "e.g. Myoma Rd, red house next to school"}
                 rows={3}
-                className={`w-full px-3 py-2.5 rounded-xl bg-background border border-border focus:border-primary outline-none resize-none transition-colors ${lang === "mm" ? "font-mm" : ""}`}
+                className={`w-full px-3 py-2.5 rounded-xl bg-background border ${addressAutoFilled ? "border-primary/50" : "border-border"} focus:border-primary outline-none resize-none transition-colors ${lang === "mm" ? "font-mm" : ""}`}
               />
+              {addressAutoFilled && (
+                <p className={`text-xs text-primary mt-1 ${lang === "mm" ? "font-mm" : ""}`}>
+                  {L({ mm: "မြေပုံမှ အလိုအလျောက် ဖြည့်ပြီး — လိုအပ်လျှင် ပြင်ဆင်ပါ", en: "Auto-filled from map pin — edit if needed" })}
+                </p>
+              )}
               {errors.address && <p className={`text-xs text-destructive mt-1 ${lang === "mm" ? "font-mm" : ""}`}>{errors.address}</p>}
 
               <label className={`block text-sm font-medium mb-1.5 mt-4 ${lang === "mm" ? "font-mm" : ""}`}>
@@ -142,14 +175,14 @@ function CheckoutPage() {
                     <Pin className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold">
+                    <div className="text-sm font-semibold truncate">
                       {pin
-                        ? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
+                        ? pin.label ?? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
                         : L({ mm: "မြေပုံဖြင့် နေရာသတ်မှတ်ရန်", en: "Pin exact location on map" })}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono truncate">
                       {pin
-                        ? `${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`
+                        ? `${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}${distanceKm != null ? ` · ${distanceKm.toFixed(1)} km` : ""}`
                         : L({ mm: "ဆိုင်ကယ်သမား ရှာဖွေရ လွယ်ကူစေရန်", en: "Helps the rider find you faster" })}
                     </div>
                   </div>
@@ -160,7 +193,7 @@ function CheckoutPage() {
                 {pin && (
                   <button
                     type="button"
-                    onClick={() => setPin(null)}
+                    onClick={() => { setPin(null); setAddressAutoFilled(false); }}
                     className="mt-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
                   >
                     {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
@@ -169,7 +202,6 @@ function CheckoutPage() {
               </div>
             </section>
 
-            {/* Payment */}
             <section className="rounded-2xl bg-card border border-border p-6">
               <h2 className={`font-semibold text-lg mb-4 flex items-center gap-2 ${lang === "mm" ? "font-mm" : ""}`}>
                 <Wallet className="w-4 h-4 text-primary" /> {L({ mm: "ငွေပေးချေမှုနည်းလမ်း", en: "Payment method" })}
@@ -201,7 +233,6 @@ function CheckoutPage() {
             </section>
           </div>
 
-          {/* Summary */}
           <aside className="md:sticky md:top-24 self-start">
             <div className="rounded-2xl bg-card border border-border p-5">
               <h3 className={`font-semibold mb-3 ${lang === "mm" ? "font-mm" : ""}`}>{L({ mm: "အော်ဒါ အကျဉ်း", en: "Order summary" })}</h3>
@@ -220,7 +251,21 @@ function CheckoutPage() {
               <div className="h-px bg-border my-4" />
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-muted-foreground"><span>{L({ mm: "အခြေခံ", en: "Subtotal" })}</span><span className="text-foreground">{formatKs(cartSubtotal)}</span></div>
-                <div className="flex justify-between text-muted-foreground"><span>{L({ mm: "ပို့ဆောင်ခ", en: "Delivery" })}</span><span className="text-foreground">{formatKs(deliveryFee)}</span></div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <Bike className="w-3.5 h-3.5" />
+                    {L({ mm: "ပို့ဆောင်ခ", en: "Delivery" })}
+                    {distanceKm != null && (
+                      <span className="text-[10px] text-accent">({distanceKm.toFixed(1)} km)</span>
+                    )}
+                  </span>
+                  <span className="text-foreground">{formatKs(deliveryFee)}</span>
+                </div>
+                {!pin && (
+                  <div className={`text-[11px] text-accent/80 ${lang === "mm" ? "font-mm" : ""}`}>
+                    {L({ mm: "မြေပုံ သတ်မှတ်ပါက အကွာအဝေးအလိုက် တွက်ချက်ပါမည်", en: "Pin the map to calculate by distance" })}
+                  </div>
+                )}
               </div>
               <div className="h-px bg-border my-3" />
               <div className="flex justify-between items-baseline">
@@ -251,6 +296,10 @@ function CheckoutPage() {
         onConfirm={(loc) => {
           setPin(loc);
           setMapOpen(false);
+          if (loc.label && (!address.trim() || addressAutoFilled)) {
+            setAddress(loc.label);
+            setAddressAutoFilled(true);
+          }
         }}
       />
     </div>
