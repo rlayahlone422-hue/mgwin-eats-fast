@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   type CartLine,
+  type DeliveryPin,
   type Lang,
   type Order,
   type OrderStatus,
@@ -32,6 +33,9 @@ type AppCtx = {
     phone: string;
     address: string;
     paymentMethod: PaymentMethod;
+    pin?: DeliveryPin | null;
+    distanceKm?: number | null;
+    deliveryFee?: number;
   }) => Order | null;
   reorder: (orderId: string) => string | null;
 };
