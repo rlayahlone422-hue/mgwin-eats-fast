@@ -242,6 +242,17 @@ function CheckoutPage() {
           <span>{formatKs(total)}</span>
         </button>
       </div>
+
+      <MapPicker
+        open={mapOpen}
+        initial={pin}
+        lang={lang}
+        onClose={() => setMapOpen(false)}
+        onConfirm={(loc) => {
+          setPin(loc);
+          setMapOpen(false);
+        }}
+      />
     </div>
   );
 }
