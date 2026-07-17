@@ -165,3 +165,31 @@ export const PAYMENT_LABELS: Record<PaymentMethod, { mm: string; en: string }> =
   kbzpay: { mm: "KBZPay", en: "KBZPay" },
   wavepay: { mm: "Wave Pay", en: "Wave Pay" },
 };
+
+// Namsang town centre (approx). Used as the base for delivery distance.
+export const NAMSANG_CENTER = { lat: 20.8833, lng: 97.7333 };
+
+export function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const R = 6371;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// Simple local radius table for Namsang motorbike delivery (Ks)
+export const DELIVERY_TIERS: { maxKm: number; fee: number }[] = [
+  { maxKm: 2, fee: 1500 },
+  { maxKm: 4, fee: 2000 },
+  { maxKm: 6, fee: 2500 },
+  { maxKm: 10, fee: 3000 },
+  { maxKm: Infinity, fee: 4000 },
+];
+
+export function computeDeliveryFee(distanceKm: number): number {
+  return DELIVERY_TIERS.find((t) => distanceKm <= t.maxKm)?.fee ?? 4000;
+}
