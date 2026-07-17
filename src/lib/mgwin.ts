@@ -55,6 +55,12 @@ export type OrderItem = {
   notes: string;
 };
 
+export type DeliveryPin = {
+  lat: number;
+  lng: number;
+  label?: string | null;
+};
+
 export type Order = {
   id: string;
   restaurantId: string;
@@ -66,6 +72,8 @@ export type Order = {
   total: number;
   phone: string;
   address: string;
+  pin?: DeliveryPin | null;
+  distanceKm?: number | null;
   paymentMethod: PaymentMethod;
   status: OrderStatus;
   createdAt: number;
