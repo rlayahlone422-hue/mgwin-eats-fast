@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { MapPreview } from "@/components/MapPreview";
 import { useApp } from "@/lib/mgwin-store";
 import { formatKs, ORDER_STEPS, STATUS_LABELS, PAYMENT_LABELS, type OrderStatus } from "@/lib/mgwin";
 
@@ -130,6 +131,17 @@ function OrderTracking() {
             <h3 className={`font-semibold mb-3 flex items-center gap-2 ${lang === "mm" ? "font-mm" : ""}`}>
               <MapPin className="w-4 h-4 text-primary" /> {L({ mm: "ပို့ဆောင်ရမည့်နေရာ", en: "Delivery" })}
             </h3>
+            {order.pin && (
+              <div className="mb-3">
+                <MapPreview lat={order.pin.lat} lng={order.pin.lng} label={order.pin.label ?? null} height={160} />
+                {order.distanceKm != null && (
+                  <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Bike className="w-3 h-3 text-primary" />
+                    <span>{order.distanceKm.toFixed(1)} km {lang === "mm" ? "အကွာအဝေး" : "from town centre"}</span>
+                  </div>
+                )}
+              </div>
+            )}
             <p className={`text-sm ${lang === "mm" ? "font-mm" : ""}`}>{order.address}</p>
             <div className="mt-3 pt-3 border-t border-border flex items-center gap-2 text-sm">
               <Phone className="w-3.5 h-3.5 text-muted-foreground" />
