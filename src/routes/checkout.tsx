@@ -21,6 +21,8 @@ function CheckoutPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [landmark, setLandmark] = useState("");
+  const [pin, setPin] = useState<PickedLocation | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
   const [payment, setPayment] = useState<PaymentMethod>("cash");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ phone?: string; address?: string }>({});
