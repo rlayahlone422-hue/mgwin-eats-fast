@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Phone, MapPin, Wallet, Check, ArrowLeft } from "lucide-react";
+import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { MapPicker, type PickedLocation } from "@/components/MapPicker";
 import { useApp } from "@/lib/mgwin-store";
 import { formatKs, getMenuItem, getRestaurant, type PaymentMethod, PAYMENT_LABELS } from "@/lib/mgwin";
 
