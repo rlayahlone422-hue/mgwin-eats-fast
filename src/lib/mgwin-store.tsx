@@ -158,7 +158,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       })
       .filter(Boolean) as Order["items"];
     const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
-    const deliveryFee = restaurant.deliveryFee;
+    const deliveryFee = input.deliveryFee ?? restaurant.deliveryFee;
     const now = Date.now();
     const id = `MG-${now.toString(36).toUpperCase().slice(-6)}`;
     const order: Order = {
@@ -172,6 +172,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       total: subtotal + deliveryFee,
       phone: input.phone,
       address: input.address,
+      pin: input.pin ?? null,
+      distanceKm: input.distanceKm ?? null,
       paymentMethod: input.paymentMethod,
       status: "placed",
       createdAt: now,
