@@ -132,11 +132,40 @@ function CheckoutPage() {
                 className={`w-full h-11 px-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors ${lang === "mm" ? "font-mm" : ""}`}
               />
 
-              <div className="mt-4 rounded-xl border border-dashed border-border p-3 text-xs text-muted-foreground flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                <span className={lang === "mm" ? "font-mm" : ""}>
-                  {L({ mm: "မြေပုံဖြင့် နေရာသတ်မှတ်ခြင်း မကြာမီ ထည့်သွင်းပါမည်။", en: "Map pin selection coming soon — a landmark note works fine for now." })}
-                </span>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setMapOpen(true)}
+                  className={`w-full flex items-center gap-3 rounded-xl border-2 border-dashed ${pin ? "border-primary/60 bg-primary/5" : "border-border hover:border-primary/40"} p-3 text-left transition-all ${lang === "mm" ? "font-mm" : ""}`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-gradient-ember flex items-center justify-center shrink-0">
+                    <Pin className="w-4 h-4 text-primary-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold">
+                      {pin
+                        ? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
+                        : L({ mm: "မြေပုံဖြင့် နေရာသတ်မှတ်ရန်", en: "Pin exact location on map" })}
+                    </div>
+                    <div className="text-xs text-muted-foreground font-mono truncate">
+                      {pin
+                        ? `${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`
+                        : L({ mm: "ဆိုင်ကယ်သမား ရှာဖွေရ လွယ်ကူစေရန်", en: "Helps the rider find you faster" })}
+                    </div>
+                  </div>
+                  <span className="text-xs text-primary font-semibold shrink-0">
+                    {pin ? L({ mm: "ပြင်ရန်", en: "Edit" }) : L({ mm: "ဖွင့်ရန်", en: "Open" })}
+                  </span>
+                </button>
+                {pin && (
+                  <button
+                    type="button"
+                    onClick={() => setPin(null)}
+                    className="mt-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
+                  </button>
+                )}
               </div>
             </section>
 
