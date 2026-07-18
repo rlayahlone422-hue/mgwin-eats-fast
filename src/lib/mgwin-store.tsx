@@ -47,6 +47,7 @@ const Ctx = createContext<AppCtx | null>(null);
 const LS_LANG = "mgwin-lang";
 const LS_CART = "mgwin-cart-v1";
 const LS_ORDERS = "mgwin-orders-v1";
+const LS_LAST_PIN = "mgwin-last-pin-v1";
 
 function loadJSON<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
