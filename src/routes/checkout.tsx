@@ -91,8 +91,9 @@ function CheckoutPage() {
     const parts = [address.trim()];
     if (landmark.trim()) parts.push(landmark.trim());
     if (pin) {
-      const tail = pin.label
-        ? `📍 ${pin.label} (${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)})`
+      const displayLbl = pinLabel(pin, lang);
+      const tail = displayLbl
+        ? `📍 ${displayLbl} (${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)})`
         : `📍 ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`;
       parts.push(tail);
     }
@@ -101,7 +102,15 @@ function CheckoutPage() {
       phone: phone.trim(),
       address: fullAddress,
       paymentMethod: payment,
-      pin: pin ? { lat: pin.lat, lng: pin.lng, label: pin.label ?? null } : null,
+      pin: pin
+        ? {
+            lat: pin.lat,
+            lng: pin.lng,
+            label: pin.label ?? pin.label_en ?? pin.label_mm ?? null,
+            label_mm: pin.label_mm ?? null,
+            label_en: pin.label_en ?? null,
+          }
+        : null,
       distanceKm,
       deliveryFee,
     });
