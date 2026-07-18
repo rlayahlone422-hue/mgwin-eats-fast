@@ -204,7 +204,7 @@ function CheckoutPage() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold truncate">
                       {pin
-                        ? pin.label ?? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
+                        ? pinLabel(pin, lang) ?? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
                         : L({ mm: "မြေပုံဖြင့် နေရာသတ်မှတ်ရန်", en: "Pin exact location on map" })}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono truncate">
@@ -217,10 +217,15 @@ function CheckoutPage() {
                     {pin ? L({ mm: "ပြင်ရန်", en: "Edit" }) : L({ mm: "ဖွင့်ရန်", en: "Open" })}
                   </span>
                 </button>
+                {prefilledFromLast && pin && (
+                  <p className={`text-xs text-accent mt-2 ${lang === "mm" ? "font-mm" : ""}`}>
+                    {L({ mm: "ယခင်နေရာမှ အလိုအလျောက် ဖြည့်ပြီး", en: "Prefilled from your last delivery location" })}
+                  </p>
+                )}
                 {pin && (
                   <button
                     type="button"
-                    onClick={() => { setPin(null); setAddressAutoFilled(false); }}
+                    onClick={() => { setPin(null); setAddressAutoFilled(false); setPrefilledFromLast(false); }}
                     className="mt-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
                   >
                     {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
