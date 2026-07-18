@@ -192,6 +192,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       statusHistory: [{ status: "placed", at: now }],
     };
     setOrders((prev) => [order, ...prev]);
+    if (order.pin) setLastPinState(order.pin);
     clearCart();
     return order;
   };
@@ -204,6 +205,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .map((i) => ({ menuItemId: i.menuItemId, qty: i.qty, notes: i.notes }));
     if (lines.length === 0) return null;
     setCart({ restaurantId: o.restaurantId, lines });
+    if (o.pin) setLastPinState(o.pin);
     return o.restaurantId;
   };
 
@@ -211,7 +213,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lang, setLang, L,
     cart, cartCount, cartSubtotal,
     addToCart, updateQty, updateNotes, removeLine, clearCart, forceReplaceCart,
-    orders, placeOrder, reorder,
+    orders, lastPin, setLastPin, placeOrder, reorder,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
