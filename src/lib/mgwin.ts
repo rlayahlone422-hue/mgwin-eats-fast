@@ -59,6 +59,8 @@ export type DeliveryPin = {
   lat: number;
   lng: number;
   label?: string | null;
+  label_mm?: string | null;
+  label_en?: string | null;
 };
 
 export type Order = {
