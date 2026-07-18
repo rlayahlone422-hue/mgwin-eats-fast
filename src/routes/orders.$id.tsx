@@ -3,7 +3,7 @@ import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Fla
 import { AppHeader } from "@/components/AppHeader";
 import { MapPreview } from "@/components/MapPreview";
 import { useApp } from "@/lib/mgwin-store";
-import { formatKs, ORDER_STEPS, STATUS_LABELS, PAYMENT_LABELS, type OrderStatus } from "@/lib/mgwin";
+import { formatKs, ORDER_STEPS, STATUS_LABELS, PAYMENT_LABELS, estimateEta, pinLabel, type OrderStatus } from "@/lib/mgwin";
 
 export const Route = createFileRoute("/orders/$id")({
   component: OrderTracking,
