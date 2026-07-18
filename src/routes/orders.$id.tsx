@@ -129,6 +129,54 @@ function OrderTracking() {
           </ol>
         </div>
 
+        {/* ETA breakdown */}
+        <div className="mt-4 rounded-2xl bg-gradient-to-br from-primary/10 via-card to-card border border-primary/25 p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className={`text-xs uppercase tracking-widest text-accent ${lang === "mm" ? "font-mm" : ""}`}>
+                {L({ mm: "ခန့်မှန်း ရောက်ချိန်", en: "Estimated arrival" })}
+              </div>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="font-display text-3xl text-gradient-ember">
+                  {order.status === "delivered" ? "✓" : `~${minutesRemaining || eta.totalMin}`}
+                </span>
+                <span className={`text-sm text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
+                  {order.status === "delivered"
+                    ? L({ mm: "ရောက်ရှိပြီး", en: "Delivered" })
+                    : (lang === "mm" ? "မိနစ်ခန့်" : "min to your door")}
+                </span>
+              </div>
+            </div>
+            <Clock className="w-8 h-8 text-primary/60" />
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+            <div className="rounded-xl bg-background/60 border border-border p-3">
+              <ChefHat className="w-4 h-4 text-primary mx-auto mb-1" />
+              <div className="text-lg font-display text-foreground">{eta.prepMin}</div>
+              <div className={`text-[10px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
+                {L({ mm: "ချက်ချိန် (မိနစ်)", en: "Kitchen prep (min)" })}
+              </div>
+            </div>
+            <div className="rounded-xl bg-background/60 border border-border p-3">
+              <Bike className="w-4 h-4 text-primary mx-auto mb-1" />
+              <div className="text-lg font-display text-foreground">{eta.rideMin}</div>
+              <div className={`text-[10px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
+                {L({ mm: "စီးချိန် (မိနစ်)", en: "Ride time (min)" })}
+              </div>
+            </div>
+            <div className="rounded-xl bg-background/60 border border-border p-3">
+              <MapPin className="w-4 h-4 text-primary mx-auto mb-1" />
+              <div className="text-lg font-display text-foreground">
+                {order.distanceKm != null ? order.distanceKm.toFixed(1) : "—"}
+              </div>
+              <div className={`text-[10px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
+                {L({ mm: "အကွာအဝေး (km)", en: "Distance (km)" })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* Details */}
         <div className="grid md:grid-cols-2 gap-4 mt-4">
           <div className="rounded-2xl bg-card border border-border p-5">
