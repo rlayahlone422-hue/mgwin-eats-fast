@@ -36,6 +36,10 @@ function OrderTracking() {
 
   const currentIdx = ORDER_STEPS.indexOf(order.status);
   const progressPct = (currentIdx / (ORDER_STEPS.length - 1)) * 100;
+  const eta = estimateEta(order.distanceKm);
+  const etaTargetMs = order.createdAt + eta.totalMin * 60 * 1000;
+  const minutesRemaining = Math.max(0, Math.round((etaTargetMs - Date.now()) / 60000));
+  const pinDisplayLabel = pinLabel(order.pin, lang);
 
   const handleReorder = () => {
     const rId = reorder(order.id);
