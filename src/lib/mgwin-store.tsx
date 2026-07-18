@@ -61,6 +61,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("mm");
   const [cart, setCart] = useState<{ restaurantId: string | null; lines: CartLine[] }>({ restaurantId: null, lines: [] });
   const [orders, setOrders] = useState<Order[]>([]);
+  const [lastPin, setLastPinState] = useState<DeliveryPin | null>(null);
 
   // Hydrate from localStorage
   useEffect(() => {
@@ -68,10 +69,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (savedLang) setLangState(savedLang);
     setCart(loadJSON(LS_CART, { restaurantId: null, lines: [] }));
     setOrders(loadJSON(LS_ORDERS, []));
+    setLastPinState(loadJSON<DeliveryPin | null>(LS_LAST_PIN, null));
   }, []);
 
   useEffect(() => { if (typeof window !== "undefined") localStorage.setItem(LS_CART, JSON.stringify(cart)); }, [cart]);
   useEffect(() => { if (typeof window !== "undefined") localStorage.setItem(LS_ORDERS, JSON.stringify(orders)); }, [orders]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (lastPin) localStorage.setItem(LS_LAST_PIN, JSON.stringify(lastPin));
+    else localStorage.removeItem(LS_LAST_PIN);
+  }, [lastPin]);
+
+  const setLastPin = (pin: DeliveryPin | null) => setLastPinState(pin);
 
   const setLang = (l: Lang) => {
     setLangState(l);
