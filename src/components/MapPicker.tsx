@@ -43,6 +43,8 @@ export interface PickedLocation {
   lat: number;
   lng: number;
   label?: string | null;
+  label_mm?: string | null;
+  label_en?: string | null;
 }
 
 interface Props {
