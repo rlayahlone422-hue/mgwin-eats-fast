@@ -195,3 +195,21 @@ export const DELIVERY_TIERS: { maxKm: number; fee: number }[] = [
 export function computeDeliveryFee(distanceKm: number): number {
   return DELIVERY_TIERS.find((t) => distanceKm <= t.maxKm)?.fee ?? 4000;
 }
+
+// Rough ETA: kitchen prep + rider ride time. Namsang motorbikes ~25 km/h effective.
+export function estimateEta(distanceKm: number | null | undefined): {
+  prepMin: number;
+  rideMin: number;
+  totalMin: number;
+} {
+  const d = typeof distanceKm === "number" && distanceKm > 0 ? distanceKm : 1;
+  const prepMin = 12;
+  const rideMin = Math.max(4, Math.round((d / 25) * 60));
+  return { prepMin, rideMin, totalMin: prepMin + rideMin };
+}
+
+export function pinLabel(pin: DeliveryPin | null | undefined, lang: Lang): string | null {
+  if (!pin) return null;
+  if (lang === "mm") return pin.label_mm ?? pin.label ?? pin.label_en ?? null;
+  return pin.label_en ?? pin.label ?? pin.label_mm ?? null;
+}
