@@ -341,8 +341,10 @@ function CheckoutPage() {
         onConfirm={(loc) => {
           setPin(loc);
           setMapOpen(false);
-          if (loc.label && (!address.trim() || addressAutoFilled)) {
-            setAddress(loc.label);
+          setPrefilledFromLast(false);
+          const displayLbl = pinLabel(loc, lang);
+          if (displayLbl && (!address.trim() || addressAutoFilled)) {
+            setAddress(displayLbl);
             setAddressAutoFilled(true);
           }
         }}
