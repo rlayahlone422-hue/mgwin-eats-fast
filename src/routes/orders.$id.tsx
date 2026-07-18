@@ -137,7 +137,10 @@ function OrderTracking() {
             </h3>
             {order.pin && (
               <div className="mb-3">
-                <MapPreview lat={order.pin.lat} lng={order.pin.lng} label={order.pin.label ?? null} height={160} />
+                <MapPreview lat={order.pin.lat} lng={order.pin.lng} label={pinDisplayLabel} height={160} />
+                <p className={`mt-2 text-[11px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
+                  {L({ mm: "မြေပုံကို နှိပ်၍ ချဲ့ကြည့်ပါ", en: "Tap the map to expand full-screen" })}
+                </p>
                 {order.distanceKm != null && (
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Bike className="w-3 h-3 text-primary" />
@@ -146,7 +149,10 @@ function OrderTracking() {
                 )}
               </div>
             )}
-            <p className={`text-sm ${lang === "mm" ? "font-mm" : ""}`}>{order.address}</p>
+            {pinDisplayLabel && (
+              <p className={`text-sm font-medium ${lang === "mm" ? "font-mm" : ""}`}>{pinDisplayLabel}</p>
+            )}
+            <p className={`text-sm text-muted-foreground mt-1 ${lang === "mm" ? "font-mm" : ""}`}>{order.address}</p>
             <div className="mt-3 pt-3 border-t border-border flex items-center gap-2 text-sm">
               <Phone className="w-3.5 h-3.5 text-muted-foreground" />
               <a href={`tel:${order.phone}`} className="text-primary hover:underline">{order.phone}</a>
