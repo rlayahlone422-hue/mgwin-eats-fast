@@ -23,19 +23,33 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
-  const { lang, L, cart, cartSubtotal, placeOrder } = useApp();
+  const { lang, L, cart, cartSubtotal, placeOrder, lastPin } = useApp();
   const navigate = useNavigate();
   const restaurant = cart.restaurantId ? getRestaurant(cart.restaurantId) : null;
 
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [landmark, setLandmark] = useState("");
-  const [pin, setPin] = useState<PickedLocation | null>(null);
+  const [pin, setPin] = useState<PickedLocation | null>(lastPin ?? null);
   const [addressAutoFilled, setAddressAutoFilled] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const [payment, setPayment] = useState<PaymentMethod>("cash");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ phone?: string; address?: string }>({});
+  const [prefilledFromLast, setPrefilledFromLast] = useState(false);
+
+  // Hydrate from lastPin after localStorage load (initial useState runs before hydration effect)
+  useEffect(() => {
+    if (pin || !lastPin) return;
+    setPin(lastPin);
+    const lbl = pinLabel(lastPin, lang);
+    if (lbl && !address.trim()) {
+      setAddress(lbl);
+      setAddressAutoFilled(true);
+    }
+    setPrefilledFromLast(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastPin]);
 
   const { distanceKm, deliveryFee } = useMemo(() => {
     if (!restaurant) return { distanceKm: null as number | null, deliveryFee: 0 };
@@ -43,6 +57,8 @@ function CheckoutPage() {
     const d = haversineKm(NAMSANG_CENTER, pin);
     return { distanceKm: d, deliveryFee: computeDeliveryFee(d) };
   }, [pin, restaurant]);
+
+  const eta = useMemo(() => estimateEta(distanceKm), [distanceKm]);
 
   const total = cartSubtotal + deliveryFee;
 
