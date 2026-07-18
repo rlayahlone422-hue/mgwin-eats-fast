@@ -29,6 +29,8 @@ type AppCtx = {
   forceReplaceCart: (restaurantId: string, menuItemId: string, qty: number, notes: string) => void;
 
   orders: Order[];
+  lastPin: DeliveryPin | null;
+  setLastPin: (pin: DeliveryPin | null) => void;
   placeOrder: (input: {
     phone: string;
     address: string;
@@ -45,6 +47,7 @@ const Ctx = createContext<AppCtx | null>(null);
 const LS_LANG = "mgwin-lang";
 const LS_CART = "mgwin-cart-v1";
 const LS_ORDERS = "mgwin-orders-v1";
+const LS_LAST_PIN = "mgwin-last-pin-v1";
 
 function loadJSON<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -58,6 +61,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("mm");
   const [cart, setCart] = useState<{ restaurantId: string | null; lines: CartLine[] }>({ restaurantId: null, lines: [] });
   const [orders, setOrders] = useState<Order[]>([]);
+  const [lastPin, setLastPinState] = useState<DeliveryPin | null>(null);
 
   // Hydrate from localStorage
   useEffect(() => {
@@ -65,10 +69,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (savedLang) setLangState(savedLang);
     setCart(loadJSON(LS_CART, { restaurantId: null, lines: [] }));
     setOrders(loadJSON(LS_ORDERS, []));
+    setLastPinState(loadJSON<DeliveryPin | null>(LS_LAST_PIN, null));
   }, []);
 
   useEffect(() => { if (typeof window !== "undefined") localStorage.setItem(LS_CART, JSON.stringify(cart)); }, [cart]);
   useEffect(() => { if (typeof window !== "undefined") localStorage.setItem(LS_ORDERS, JSON.stringify(orders)); }, [orders]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (lastPin) localStorage.setItem(LS_LAST_PIN, JSON.stringify(lastPin));
+    else localStorage.removeItem(LS_LAST_PIN);
+  }, [lastPin]);
+
+  const setLastPin = (pin: DeliveryPin | null) => setLastPinState(pin);
 
   const setLang = (l: Lang) => {
     setLangState(l);
@@ -180,6 +192,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       statusHistory: [{ status: "placed", at: now }],
     };
     setOrders((prev) => [order, ...prev]);
+    if (order.pin) setLastPinState(order.pin);
     clearCart();
     return order;
   };
@@ -192,6 +205,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .map((i) => ({ menuItemId: i.menuItemId, qty: i.qty, notes: i.notes }));
     if (lines.length === 0) return null;
     setCart({ restaurantId: o.restaurantId, lines });
+    if (o.pin) setLastPinState(o.pin);
     return o.restaurantId;
   };
 
@@ -199,7 +213,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lang, setLang, L,
     cart, cartCount, cartSubtotal,
     addToCart, updateQty, updateNotes, removeLine, clearCart, forceReplaceCart,
-    orders, placeOrder, reorder,
+    orders, lastPin, setLastPin, placeOrder, reorder,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

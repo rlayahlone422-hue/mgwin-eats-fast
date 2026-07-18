@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin, Bike } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin, Bike, Clock } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPicker, type PickedLocation } from "@/components/MapPicker";
 import { useApp } from "@/lib/mgwin-store";
@@ -10,6 +10,8 @@ import {
   getRestaurant,
   computeDeliveryFee,
   haversineKm,
+  estimateEta,
+  pinLabel,
   NAMSANG_CENTER,
   type PaymentMethod,
   PAYMENT_LABELS,
@@ -21,19 +23,33 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
-  const { lang, L, cart, cartSubtotal, placeOrder } = useApp();
+  const { lang, L, cart, cartSubtotal, placeOrder, lastPin } = useApp();
   const navigate = useNavigate();
   const restaurant = cart.restaurantId ? getRestaurant(cart.restaurantId) : null;
 
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [landmark, setLandmark] = useState("");
-  const [pin, setPin] = useState<PickedLocation | null>(null);
+  const [pin, setPin] = useState<PickedLocation | null>(lastPin ?? null);
   const [addressAutoFilled, setAddressAutoFilled] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
   const [payment, setPayment] = useState<PaymentMethod>("cash");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ phone?: string; address?: string }>({});
+  const [prefilledFromLast, setPrefilledFromLast] = useState(false);
+
+  // Hydrate from lastPin after localStorage load (initial useState runs before hydration effect)
+  useEffect(() => {
+    if (pin || !lastPin) return;
+    setPin(lastPin);
+    const lbl = pinLabel(lastPin, lang);
+    if (lbl && !address.trim()) {
+      setAddress(lbl);
+      setAddressAutoFilled(true);
+    }
+    setPrefilledFromLast(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastPin]);
 
   const { distanceKm, deliveryFee } = useMemo(() => {
     if (!restaurant) return { distanceKm: null as number | null, deliveryFee: 0 };
@@ -41,6 +57,8 @@ function CheckoutPage() {
     const d = haversineKm(NAMSANG_CENTER, pin);
     return { distanceKm: d, deliveryFee: computeDeliveryFee(d) };
   }, [pin, restaurant]);
+
+  const eta = useMemo(() => estimateEta(distanceKm), [distanceKm]);
 
   const total = cartSubtotal + deliveryFee;
 
@@ -73,8 +91,9 @@ function CheckoutPage() {
     const parts = [address.trim()];
     if (landmark.trim()) parts.push(landmark.trim());
     if (pin) {
-      const tail = pin.label
-        ? `📍 ${pin.label} (${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)})`
+      const displayLbl = pinLabel(pin, lang);
+      const tail = displayLbl
+        ? `📍 ${displayLbl} (${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)})`
         : `📍 ${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`;
       parts.push(tail);
     }
@@ -83,7 +102,15 @@ function CheckoutPage() {
       phone: phone.trim(),
       address: fullAddress,
       paymentMethod: payment,
-      pin: pin ? { lat: pin.lat, lng: pin.lng, label: pin.label ?? null } : null,
+      pin: pin
+        ? {
+            lat: pin.lat,
+            lng: pin.lng,
+            label: pin.label ?? pin.label_en ?? pin.label_mm ?? null,
+            label_mm: pin.label_mm ?? null,
+            label_en: pin.label_en ?? null,
+          }
+        : null,
       distanceKm,
       deliveryFee,
     });
@@ -177,7 +204,7 @@ function CheckoutPage() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold truncate">
                       {pin
-                        ? pin.label ?? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
+                        ? pinLabel(pin, lang) ?? L({ mm: "မြေပုံပေါ်တွင် သတ်မှတ်ပြီး", en: "Location pinned on map" })
                         : L({ mm: "မြေပုံဖြင့် နေရာသတ်မှတ်ရန်", en: "Pin exact location on map" })}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono truncate">
@@ -190,10 +217,15 @@ function CheckoutPage() {
                     {pin ? L({ mm: "ပြင်ရန်", en: "Edit" }) : L({ mm: "ဖွင့်ရန်", en: "Open" })}
                   </span>
                 </button>
+                {prefilledFromLast && pin && (
+                  <p className={`text-xs text-accent mt-2 ${lang === "mm" ? "font-mm" : ""}`}>
+                    {L({ mm: "ယခင်နေရာမှ အလိုအလျောက် ဖြည့်ပြီး", en: "Prefilled from your last delivery location" })}
+                  </p>
+                )}
                 {pin && (
                   <button
                     type="button"
-                    onClick={() => { setPin(null); setAddressAutoFilled(false); }}
+                    onClick={() => { setPin(null); setAddressAutoFilled(false); setPrefilledFromLast(false); }}
                     className="mt-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
                   >
                     {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
@@ -268,6 +300,19 @@ function CheckoutPage() {
                 )}
               </div>
               <div className="h-px bg-border my-3" />
+              <div className="rounded-xl bg-primary/5 border border-primary/20 p-3 mb-3">
+                <div className={`flex items-center gap-2 text-sm font-semibold ${lang === "mm" ? "font-mm" : ""}`}>
+                  <Clock className="w-4 h-4 text-primary" />
+                  {L({ mm: "ခန့်မှန်း ရောက်ချိန်", en: "Estimated arrival" })}
+                  <span className="ml-auto text-gradient-ember">
+                    ~{eta.totalMin} {lang === "mm" ? "မိနစ်" : "min"}
+                  </span>
+                </div>
+                <div className={`mt-1.5 text-[11px] text-muted-foreground grid grid-cols-2 gap-1 ${lang === "mm" ? "font-mm" : ""}`}>
+                  <span>🍳 {L({ mm: "ချက်ချိန်", en: "Prep" })}: ~{eta.prepMin} {lang === "mm" ? "မိနစ်" : "min"}</span>
+                  <span>🛵 {L({ mm: "လမ်းချိန်", en: "Ride" })}: ~{eta.rideMin} {lang === "mm" ? "မိနစ်" : "min"}</span>
+                </div>
+              </div>
               <div className="flex justify-between items-baseline">
                 <span className="font-bold">{L({ mm: "စုစုပေါင်း", en: "Total" })}</span>
                 <span className="text-gradient-ember font-display text-2xl">{formatKs(total)}</span>
@@ -296,8 +341,10 @@ function CheckoutPage() {
         onConfirm={(loc) => {
           setPin(loc);
           setMapOpen(false);
-          if (loc.label && (!address.trim() || addressAutoFilled)) {
-            setAddress(loc.label);
+          setPrefilledFromLast(false);
+          const displayLbl = pinLabel(loc, lang);
+          if (displayLbl && (!address.trim() || addressAutoFilled)) {
+            setAddress(displayLbl);
             setAddressAutoFilled(true);
           }
         }}

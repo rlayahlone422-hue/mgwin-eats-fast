@@ -43,6 +43,8 @@ export interface PickedLocation {
   lat: number;
   lng: number;
   label?: string | null;
+  label_mm?: string | null;
+  label_en?: string | null;
 }
 
 interface Props {
@@ -63,6 +65,8 @@ export function MapPicker({ open, initial, onClose, onConfirm, lang }: Props) {
   const [fallback, setFallback] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [label, setLabel] = useState<string | null>(initial?.label ?? null);
+  const [labelMm, setLabelMm] = useState<string | null>(initial?.label_mm ?? null);
+  const [labelEn, setLabelEn] = useState<string | null>(initial?.label_en ?? null);
   const [geocoding, setGeocoding] = useState(false);
   const [manualLat, setManualLat] = useState<string>("");
   const [manualLng, setManualLng] = useState<string>("");
@@ -71,15 +75,19 @@ export function MapPicker({ open, initial, onClose, onConfirm, lang }: Props) {
     setGeocoding(true);
     try {
       const res = await reverseGeocode({ data: { lat, lng } });
-      const s = res?.short ?? res?.label ?? null;
-      setLabel(s);
-      setLoc((prev) => ({ ...prev, label: s }));
+      const en = res?.short_en ?? res?.label_en ?? null;
+      const mm = res?.short_mm ?? res?.label_mm ?? null;
+      const display = lang === "mm" ? (mm ?? en) : (en ?? mm);
+      setLabel(display);
+      setLabelEn(en);
+      setLabelMm(mm);
+      setLoc((prev) => ({ ...prev, label: display, label_en: en, label_mm: mm }));
     } catch {
       setLabel(null);
     } finally {
       setGeocoding(false);
     }
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     if (!open || fallback) return;
@@ -319,7 +327,7 @@ export function MapPicker({ open, initial, onClose, onConfirm, lang }: Props) {
               {lang === "mm" ? "ပယ်ဖျက်" : "Cancel"}
             </button>
             <button
-              onClick={() => onConfirm({ ...loc, label })}
+              onClick={() => onConfirm({ ...loc, label, label_mm: labelMm, label_en: labelEn })}
               disabled={status !== "ready" && !fallback}
               className={`flex-1 h-11 rounded-xl bg-gradient-ember text-primary-foreground font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:scale-[1.02] transition-transform ${lang === "mm" ? "font-mm" : ""}`}
             >
