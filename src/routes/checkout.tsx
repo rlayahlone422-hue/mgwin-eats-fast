@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin, Bike } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Phone, MapPin, Wallet, Check, ArrowLeft, Pin, Bike, Clock } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPicker, type PickedLocation } from "@/components/MapPicker";
 import { useApp } from "@/lib/mgwin-store";
@@ -10,6 +10,8 @@ import {
   getRestaurant,
   computeDeliveryFee,
   haversineKm,
+  estimateEta,
+  pinLabel,
   NAMSANG_CENTER,
   type PaymentMethod,
   PAYMENT_LABELS,
