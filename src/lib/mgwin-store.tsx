@@ -29,6 +29,8 @@ type AppCtx = {
   forceReplaceCart: (restaurantId: string, menuItemId: string, qty: number, notes: string) => void;
 
   orders: Order[];
+  lastPin: DeliveryPin | null;
+  setLastPin: (pin: DeliveryPin | null) => void;
   placeOrder: (input: {
     phone: string;
     address: string;
