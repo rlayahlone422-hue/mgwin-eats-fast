@@ -300,6 +300,19 @@ function CheckoutPage() {
                 )}
               </div>
               <div className="h-px bg-border my-3" />
+              <div className="rounded-xl bg-primary/5 border border-primary/20 p-3 mb-3">
+                <div className={`flex items-center gap-2 text-sm font-semibold ${lang === "mm" ? "font-mm" : ""}`}>
+                  <Clock className="w-4 h-4 text-primary" />
+                  {L({ mm: "ခန့်မှန်း ရောက်ချိန်", en: "Estimated arrival" })}
+                  <span className="ml-auto text-gradient-ember">
+                    ~{eta.totalMin} {lang === "mm" ? "မိနစ်" : "min"}
+                  </span>
+                </div>
+                <div className={`mt-1.5 text-[11px] text-muted-foreground grid grid-cols-2 gap-1 ${lang === "mm" ? "font-mm" : ""}`}>
+                  <span>🍳 {L({ mm: "ချက်ချိန်", en: "Prep" })}: ~{eta.prepMin} {lang === "mm" ? "မိနစ်" : "min"}</span>
+                  <span>🛵 {L({ mm: "လမ်းချိန်", en: "Ride" })}: ~{eta.rideMin} {lang === "mm" ? "မိနစ်" : "min"}</span>
+                </div>
+              </div>
               <div className="flex justify-between items-baseline">
                 <span className="font-bold">{L({ mm: "စုစုပေါင်း", en: "Total" })}</span>
                 <span className="text-gradient-ember font-display text-2xl">{formatKs(total)}</span>
