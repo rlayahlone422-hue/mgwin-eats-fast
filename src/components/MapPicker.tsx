@@ -327,7 +327,7 @@ export function MapPicker({ open, initial, onClose, onConfirm, lang }: Props) {
               {lang === "mm" ? "ပယ်ဖျက်" : "Cancel"}
             </button>
             <button
-              onClick={() => onConfirm({ ...loc, label })}
+              onClick={() => onConfirm({ ...loc, label, label_mm: labelMm, label_en: labelEn })}
               disabled={status !== "ready" && !fallback}
               className={`flex-1 h-11 rounded-xl bg-gradient-ember text-primary-foreground font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:scale-[1.02] transition-transform ${lang === "mm" ? "font-mm" : ""}`}
             >
