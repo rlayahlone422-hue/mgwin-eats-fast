@@ -128,12 +128,48 @@ function OrderTracking() {
               </div>
             </div>
 
-            {order.status !== "delivered" && (
+            {isCancelled && (
+              <div className={`mt-6 inline-flex items-center gap-2 rounded-full bg-destructive/15 border border-destructive/40 px-3 py-1.5 text-xs text-destructive ${lang === "mm" ? "font-mm" : ""}`}>
+                <XCircle className="w-3.5 h-3.5" />
+                <span>{L({ mm: "ဒီ အော်ဒါ ပယ်ဖျက်ပြီးပါပြီ", en: "This order was cancelled" })}</span>
+              </div>
+            )}
+            {!isCancelled && order.status !== "delivered" && (
               <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-background/60 backdrop-blur border border-border px-3 py-1.5 text-xs text-muted-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span className={lang === "mm" ? "font-mm" : ""}>
                   {L({ mm: "အခြေအနေ ၁၅ စက္ကန့်တိုင်း အလိုအလျောက် အသစ်ဖြစ်ပါမည်", en: "Status updates automatically every ~15s" })}
                 </span>
+              </div>
+            )}
+            {canCancel && (
+              <div className="mt-4">
+                {!confirmCancel ? (
+                  <button
+                    onClick={() => setConfirmCancel(true)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border border-destructive/40 bg-destructive/10 hover:bg-destructive/20 text-destructive px-4 py-2 text-xs font-semibold transition-colors ${lang === "mm" ? "font-mm" : ""}`}
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                    {L({ mm: "အော်ဒါ ပယ်ဖျက်ရန်", en: "Cancel order" })}
+                  </button>
+                ) : (
+                  <div className={`flex flex-wrap items-center gap-2 rounded-xl border border-destructive/40 bg-destructive/10 p-3 ${lang === "mm" ? "font-mm" : ""}`}>
+                    <span className="text-xs text-destructive font-semibold">
+                      {L({ mm: "သေချာလား? ဆိုင်က မလက်ခံမီ ပယ်ဖျက်နိုင်သည်", en: "Sure? You can only cancel before the restaurant confirms." })}
+                    </span>
+                    <div className="ml-auto flex gap-2">
+                      <button onClick={() => setConfirmCancel(false)} className="h-8 px-3 rounded-lg border border-border text-xs hover:bg-muted">
+                        {L({ mm: "ဆက်ထား", en: "Keep it" })}
+                      </button>
+                      <button
+                        onClick={() => { cancelOrder(order.id); setConfirmCancel(false); }}
+                        className="h-8 px-3 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold hover:opacity-90"
+                      >
+                        {L({ mm: "ပယ်ဖျက်ရန်", en: "Cancel now" })}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
