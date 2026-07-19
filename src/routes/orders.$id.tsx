@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck, Navigation, XCircle, Bell, BellOff } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPreview } from "@/components/MapPreview";
 import { useApp } from "@/lib/mgwin-store";
@@ -25,21 +26,29 @@ const STATUS_ICONS: Record<OrderStatus, typeof Flame> = {
   preparing: ChefHat,
   picked_up: Bike,
   delivered: PackageCheck,
+  cancelled: XCircle,
 };
 
 function OrderTracking() {
   const { id } = Route.useParams();
-  const { lang, L, orders, reorder } = useApp();
+  const { lang, L, orders, reorder, cancelOrder, notificationsEnabled, enableNotifications } = useApp();
   const navigate = useNavigate();
   const order = orders.find((o) => o.id === id);
   if (!order) throw notFound();
 
-  const currentIdx = ORDER_STEPS.indexOf(order.status);
-  const progressPct = (currentIdx / (ORDER_STEPS.length - 1)) * 100;
+  const isCancelled = order.status === "cancelled";
+  const currentIdx = isCancelled ? -1 : ORDER_STEPS.indexOf(order.status as (typeof ORDER_STEPS)[number]);
+  const progressPct = isCancelled ? 0 : (currentIdx / (ORDER_STEPS.length - 1)) * 100;
   const eta = estimateEta(order.distanceKm);
   const etaTargetMs = order.createdAt + eta.totalMin * 60 * 1000;
   const minutesRemaining = Math.max(0, Math.round((etaTargetMs - Date.now()) / 60000));
   const pinDisplayLabel = pinLabel(order.pin, lang);
+  const canCancel = order.status === "placed";
+  const [confirmCancel, setConfirmCancel] = useState(false);
+
+  const mapsHref = order.pin
+    ? `https://www.google.com/maps/dir/?api=1&destination=${order.pin.lat},${order.pin.lng}&travelmode=driving`
+    : null;
 
   const handleReorder = () => {
     const rId = reorder(order.id);
@@ -53,6 +62,28 @@ function OrderTracking() {
         <Link to="/orders" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="w-4 h-4" /> {lang === "mm" ? "အော်ဒါများ" : "All orders"}
         </Link>
+
+        {/* Notifications prompt */}
+        {!notificationsEnabled && !isCancelled && order.status !== "delivered" && typeof window !== "undefined" && "Notification" in window && (
+          <button
+            onClick={() => enableNotifications()}
+            className={`w-full mb-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors p-3 flex items-center gap-3 text-left ${lang === "mm" ? "font-mm" : ""}`}
+          >
+            <div className="w-9 h-9 rounded-full bg-gradient-ember flex items-center justify-center shrink-0">
+              <Bell className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold">{L({ mm: "အခြေအနေ အသိပေးချက် ဖွင့်ရန်", en: "Turn on push notifications" })}</div>
+              <div className="text-[11px] text-muted-foreground">{L({ mm: "အော်ဒါ status ပြောင်းတိုင်း အသိပေးပါမည်", en: "Get alerted on every status update" })}</div>
+            </div>
+            <span className="text-xs text-primary font-semibold">{L({ mm: "ဖွင့်ရန်", en: "Enable" })}</span>
+          </button>
+        )}
+        {notificationsEnabled && !isCancelled && order.status !== "delivered" && (
+          <div className={`mb-4 inline-flex items-center gap-1.5 text-[11px] text-primary ${lang === "mm" ? "font-mm" : ""}`}>
+            <Bell className="w-3 h-3" /> {L({ mm: "အသိပေးချက် ဖွင့်ထားသည်", en: "Notifications on" })}
+          </div>
+        )}
 
         {/* Hero */}
         <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-card to-card border border-primary/30 p-6 md:p-8 shadow-ember relative overflow-hidden">
@@ -78,8 +109,8 @@ function OrderTracking() {
               <div className="mt-6 grid grid-cols-5 gap-2">
                 {ORDER_STEPS.map((step, i) => {
                   const Icon = STATUS_ICONS[step];
-                  const done = i <= currentIdx;
-                  const active = i === currentIdx && order.status !== "delivered";
+                  const done = !isCancelled && i <= currentIdx;
+                  const active = !isCancelled && i === currentIdx && order.status !== "delivered";
                   return (
                     <div key={step} className="flex flex-col items-center text-center">
                       <div className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all ${
@@ -97,12 +128,48 @@ function OrderTracking() {
               </div>
             </div>
 
-            {order.status !== "delivered" && (
+            {isCancelled && (
+              <div className={`mt-6 inline-flex items-center gap-2 rounded-full bg-destructive/15 border border-destructive/40 px-3 py-1.5 text-xs text-destructive ${lang === "mm" ? "font-mm" : ""}`}>
+                <XCircle className="w-3.5 h-3.5" />
+                <span>{L({ mm: "ဒီ အော်ဒါ ပယ်ဖျက်ပြီးပါပြီ", en: "This order was cancelled" })}</span>
+              </div>
+            )}
+            {!isCancelled && order.status !== "delivered" && (
               <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-background/60 backdrop-blur border border-border px-3 py-1.5 text-xs text-muted-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span className={lang === "mm" ? "font-mm" : ""}>
                   {L({ mm: "အခြေအနေ ၁၅ စက္ကန့်တိုင်း အလိုအလျောက် အသစ်ဖြစ်ပါမည်", en: "Status updates automatically every ~15s" })}
                 </span>
+              </div>
+            )}
+            {canCancel && (
+              <div className="mt-4">
+                {!confirmCancel ? (
+                  <button
+                    onClick={() => setConfirmCancel(true)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border border-destructive/40 bg-destructive/10 hover:bg-destructive/20 text-destructive px-4 py-2 text-xs font-semibold transition-colors ${lang === "mm" ? "font-mm" : ""}`}
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                    {L({ mm: "အော်ဒါ ပယ်ဖျက်ရန်", en: "Cancel order" })}
+                  </button>
+                ) : (
+                  <div className={`flex flex-wrap items-center gap-2 rounded-xl border border-destructive/40 bg-destructive/10 p-3 ${lang === "mm" ? "font-mm" : ""}`}>
+                    <span className="text-xs text-destructive font-semibold">
+                      {L({ mm: "သေချာလား? ဆိုင်က မလက်ခံမီ ပယ်ဖျက်နိုင်သည်", en: "Sure? You can only cancel before the restaurant confirms." })}
+                    </span>
+                    <div className="ml-auto flex gap-2">
+                      <button onClick={() => setConfirmCancel(false)} className="h-8 px-3 rounded-lg border border-border text-xs hover:bg-muted">
+                        {L({ mm: "ဆက်ထား", en: "Keep it" })}
+                      </button>
+                      <button
+                        onClick={() => { cancelOrder(order.id); setConfirmCancel(false); }}
+                        className="h-8 px-3 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold hover:opacity-90"
+                      >
+                        {L({ mm: "ပယ်ဖျက်ရန်", en: "Cancel now" })}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -130,6 +197,7 @@ function OrderTracking() {
         </div>
 
         {/* ETA breakdown */}
+        {!isCancelled && (
         <div className="mt-4 rounded-2xl bg-gradient-to-br from-primary/10 via-card to-card border border-primary/25 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -175,6 +243,8 @@ function OrderTracking() {
             </div>
           </div>
         </div>
+        )}
+
 
 
         {/* Details */}
@@ -189,6 +259,17 @@ function OrderTracking() {
                 <p className={`mt-2 text-[11px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
                   {L({ mm: "မြေပုံကို နှိပ်၍ ချဲ့ကြည့်ပါ", en: "Tap the map to expand full-screen" })}
                 </p>
+                {mapsHref && (
+                  <a
+                    href={mapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mt-2 inline-flex items-center gap-2 rounded-full bg-gradient-ember text-primary-foreground px-4 py-2 text-xs font-semibold shadow-ember hover:scale-[1.02] transition-transform ${lang === "mm" ? "font-mm" : ""}`}
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    {L({ mm: "Google Maps ဖြင့် လမ်းညွှန်ရန်", en: "Open directions in Google Maps" })}
+                  </a>
+                )}
                 {order.distanceKm != null && (
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Bike className="w-3 h-3 text-primary" />

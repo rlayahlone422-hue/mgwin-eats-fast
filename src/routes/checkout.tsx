@@ -223,13 +223,41 @@ function CheckoutPage() {
                   </p>
                 )}
                 {pin && (
-                  <button
-                    type="button"
-                    onClick={() => { setPin(null); setAddressAutoFilled(false); setPrefilledFromLast(false); }}
-                    className="mt-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
-                  >
-                    {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
-                  </button>
+                  <div className="mt-3 space-y-2">
+                    <label className={`block text-xs font-semibold text-muted-foreground uppercase tracking-wider ${lang === "mm" ? "font-mm" : ""}`}>
+                      {L({ mm: "မြေပုံအမှတ် အမည် (ပြင်ရန်)", en: "Pin label (edit)" })}
+                    </label>
+                    <input
+                      value={pinLabel(pin, lang) ?? ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setPin((prev) => prev ? ({
+                          ...prev,
+                          label: v,
+                          label_mm: lang === "mm" ? v : prev.label_mm,
+                          label_en: lang === "en" ? v : prev.label_en,
+                        }) : prev);
+                      }}
+                      placeholder={lang === "mm" ? "ဥပမာ: ဗိုလ်ချုပ်ကျောင်း ဘေးအိမ်" : "e.g. next to school gate"}
+                      className={`w-full h-10 px-3 rounded-xl bg-background border border-border focus:border-primary outline-none text-sm ${lang === "mm" ? "font-mm" : ""}`}
+                    />
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setMapOpen(true)}
+                        className={`text-xs text-primary font-semibold hover:underline ${lang === "mm" ? "font-mm" : ""}`}
+                      >
+                        {L({ mm: "မြေပုံပြင်ရန်", en: "Refine pin on map" })}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setPin(null); setAddressAutoFilled(false); setPrefilledFromLast(false); }}
+                        className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+                      >
+                        {L({ mm: "မြေပုံအမှတ် ဖျက်ရန်", en: "Remove pin" })}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </section>

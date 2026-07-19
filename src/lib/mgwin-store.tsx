@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { STATUS_LABELS } from "./mgwin";
 import {
   type CartLine,
   type DeliveryPin,
@@ -40,6 +41,9 @@ type AppCtx = {
     deliveryFee?: number;
   }) => Order | null;
   reorder: (orderId: string) => string | null;
+  cancelOrder: (orderId: string) => boolean;
+  notificationsEnabled: boolean;
+  enableNotifications: () => Promise<boolean>;
 };
 
 const Ctx = createContext<AppCtx | null>(null);
@@ -94,8 +98,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setOrders((prev) => {
         let changed = false;
         const next = prev.map((o) => {
-          if (o.status === "delivered") return o;
-          const idx = ORDER_STEPS.indexOf(o.status);
+          if (o.status === "delivered" || o.status === "cancelled") return o;
+          const idx = ORDER_STEPS.indexOf(o.status as (typeof ORDER_STEPS)[number]);
+          if (idx < 0) return o;
           const elapsed = Date.now() - (o.statusHistory[o.statusHistory.length - 1]?.at ?? o.createdAt);
           if (elapsed < 15000) return o;
           const nextStatus = ORDER_STEPS[idx + 1];
@@ -209,11 +214,66 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return o.restaurantId;
   };
 
+  const cancelOrder: AppCtx["cancelOrder"] = (orderId) => {
+    let ok = false;
+    setOrders((prev) =>
+      prev.map((o) => {
+        if (o.id !== orderId) return o;
+        if (o.status !== "placed") return o;
+        ok = true;
+        return { ...o, status: "cancelled", statusHistory: [...o.statusHistory, { status: "cancelled", at: Date.now() }] };
+      }),
+    );
+    return ok;
+  };
+
+  // Push notifications for status changes
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      setNotificationsEnabled(true);
+    }
+  }, []);
+
+  const enableNotifications: AppCtx["enableNotifications"] = async () => {
+    if (typeof window === "undefined" || !("Notification" in window)) return false;
+    if (Notification.permission === "granted") { setNotificationsEnabled(true); return true; }
+    if (Notification.permission === "denied") return false;
+    const p = await Notification.requestPermission();
+    const ok = p === "granted";
+    setNotificationsEnabled(ok);
+    return ok;
+  };
+
+  const prevStatusesRef = useRef<Map<string, OrderStatus>>(new Map());
+  useEffect(() => {
+    if (!notificationsEnabled) {
+      prevStatusesRef.current = new Map(orders.map((o) => [o.id, o.status]));
+      return;
+    }
+    const prev = prevStatusesRef.current;
+    for (const o of orders) {
+      const before = prev.get(o.id);
+      if (before && before !== o.status) {
+        try {
+          const label = lang === "mm" ? STATUS_LABELS[o.status].mm : STATUS_LABELS[o.status].en;
+          const restName = lang === "mm" ? o.restaurantName_mm : o.restaurantName_en;
+          new Notification(`Mg Win · #${o.id}`, {
+            body: `${label} — ${restName}`,
+            tag: `mgwin-${o.id}`,
+          });
+        } catch { /* ignore */ }
+      }
+    }
+    prevStatusesRef.current = new Map(orders.map((o) => [o.id, o.status]));
+  }, [orders, notificationsEnabled, lang]);
+
   const value: AppCtx = {
     lang, setLang, L,
     cart, cartCount, cartSubtotal,
     addToCart, updateQty, updateNotes, removeLine, clearCart, forceReplaceCart,
-    orders, lastPin, setLastPin, placeOrder, reorder,
+    orders, lastPin, setLastPin, placeOrder, reorder, cancelOrder,
+    notificationsEnabled, enableNotifications,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
