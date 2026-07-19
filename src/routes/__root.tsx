@@ -64,16 +64,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Mg Win — နမ့်စန်မြို့ရဲ့ ကိုယ်ပိုင် အစားအသောက် ပို့ဆောင်ရေး" },
+      { title: "Mg Win" },
       { name: "description", content: "Mg Win delivers hot Shan noodles, mohinga, tea-leaf salad and more from Namsang's best kitchens — pay by cash, KBZPay or Wave Pay." },
-      { property: "og:title", content: "Mg Win — Namsang Food Delivery" },
-      { property: "og:description", content: "Local food, local riders, local prices. Order in Burmese or English." },
+      { property: "og:title", content: "Mg Win" },
+      { property: "og:description", content: "Mg Win delivers hot Shan noodles, mohinga, tea-leaf salad and more from Namsang's best kitchens — pay by cash, KBZPay or Wave Pay." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Mg Win" },
+      { name: "twitter:description", content: "Mg Win delivers hot Shan noodles, mohinga, tea-leaf salad and more from Namsang's best kitchens — pay by cash, KBZPay or Wave Pay." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/86214a57-0976-462f-ad65-19e86f65fd48/id-preview-da4f4f24--2c79d312-abed-4882-8b78-a4c2b7501f05.lovable.app-1784437500632.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/86214a57-0976-462f-ad65-19e86f65fd48/id-preview-da4f4f24--2c79d312-abed-4882-8b78-a4c2b7501f05.lovable.app-1784437500632.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
