@@ -63,6 +63,28 @@ function OrderTracking() {
           <ArrowLeft className="w-4 h-4" /> {lang === "mm" ? "အော်ဒါများ" : "All orders"}
         </Link>
 
+        {/* Notifications prompt */}
+        {!notificationsEnabled && !isCancelled && order.status !== "delivered" && typeof window !== "undefined" && "Notification" in window && (
+          <button
+            onClick={() => enableNotifications()}
+            className={`w-full mb-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors p-3 flex items-center gap-3 text-left ${lang === "mm" ? "font-mm" : ""}`}
+          >
+            <div className="w-9 h-9 rounded-full bg-gradient-ember flex items-center justify-center shrink-0">
+              <Bell className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold">{L({ mm: "အခြေအနေ အသိပေးချက် ဖွင့်ရန်", en: "Turn on push notifications" })}</div>
+              <div className="text-[11px] text-muted-foreground">{L({ mm: "အော်ဒါ status ပြောင်းတိုင်း အသိပေးပါမည်", en: "Get alerted on every status update" })}</div>
+            </div>
+            <span className="text-xs text-primary font-semibold">{L({ mm: "ဖွင့်ရန်", en: "Enable" })}</span>
+          </button>
+        )}
+        {notificationsEnabled && !isCancelled && order.status !== "delivered" && (
+          <div className={`mb-4 inline-flex items-center gap-1.5 text-[11px] text-primary ${lang === "mm" ? "font-mm" : ""}`}>
+            <Bell className="w-3 h-3" /> {L({ mm: "အသိပေးချက် ဖွင့်ထားသည်", en: "Notifications on" })}
+          </div>
+        )}
+
         {/* Hero */}
         <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-card to-card border border-primary/30 p-6 md:p-8 shadow-ember relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
