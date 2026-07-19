@@ -36,9 +36,9 @@ export type MenuItem = {
 };
 
 export type PaymentMethod = "cash" | "kbzpay" | "wavepay";
-export type OrderStatus = "placed" | "confirmed" | "preparing" | "picked_up" | "delivered";
+export type OrderStatus = "placed" | "confirmed" | "preparing" | "picked_up" | "delivered" | "cancelled";
 
-export const ORDER_STEPS: OrderStatus[] = ["placed", "confirmed", "preparing", "picked_up", "delivered"];
+export const ORDER_STEPS: Exclude<OrderStatus, "cancelled">[] = ["placed", "confirmed", "preparing", "picked_up", "delivered"];
 
 export type CartLine = {
   menuItemId: string;
