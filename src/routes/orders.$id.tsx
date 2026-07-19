@@ -197,6 +197,7 @@ function OrderTracking() {
         </div>
 
         {/* ETA breakdown */}
+        {!isCancelled && (
         <div className="mt-4 rounded-2xl bg-gradient-to-br from-primary/10 via-card to-card border border-primary/25 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
