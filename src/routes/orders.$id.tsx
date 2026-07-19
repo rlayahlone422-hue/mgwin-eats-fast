@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck, Navigation, XCircle, Bell, BellOff } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPreview } from "@/components/MapPreview";
 import { useApp } from "@/lib/mgwin-store";
@@ -25,21 +26,29 @@ const STATUS_ICONS: Record<OrderStatus, typeof Flame> = {
   preparing: ChefHat,
   picked_up: Bike,
   delivered: PackageCheck,
+  cancelled: XCircle,
 };
 
 function OrderTracking() {
   const { id } = Route.useParams();
-  const { lang, L, orders, reorder } = useApp();
+  const { lang, L, orders, reorder, cancelOrder, notificationsEnabled, enableNotifications } = useApp();
   const navigate = useNavigate();
   const order = orders.find((o) => o.id === id);
   if (!order) throw notFound();
 
-  const currentIdx = ORDER_STEPS.indexOf(order.status);
-  const progressPct = (currentIdx / (ORDER_STEPS.length - 1)) * 100;
+  const isCancelled = order.status === "cancelled";
+  const currentIdx = isCancelled ? -1 : ORDER_STEPS.indexOf(order.status as (typeof ORDER_STEPS)[number]);
+  const progressPct = isCancelled ? 0 : (currentIdx / (ORDER_STEPS.length - 1)) * 100;
   const eta = estimateEta(order.distanceKm);
   const etaTargetMs = order.createdAt + eta.totalMin * 60 * 1000;
   const minutesRemaining = Math.max(0, Math.round((etaTargetMs - Date.now()) / 60000));
   const pinDisplayLabel = pinLabel(order.pin, lang);
+  const canCancel = order.status === "placed";
+  const [confirmCancel, setConfirmCancel] = useState(false);
+
+  const mapsHref = order.pin
+    ? `https://www.google.com/maps/dir/?api=1&destination=${order.pin.lat},${order.pin.lng}&travelmode=driving`
+    : null;
 
   const handleReorder = () => {
     const rId = reorder(order.id);
