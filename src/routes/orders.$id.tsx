@@ -109,8 +109,8 @@ function OrderTracking() {
               <div className="mt-6 grid grid-cols-5 gap-2">
                 {ORDER_STEPS.map((step, i) => {
                   const Icon = STATUS_ICONS[step];
-                  const done = i <= currentIdx;
-                  const active = i === currentIdx && order.status !== "delivered";
+                  const done = !isCancelled && i <= currentIdx;
+                  const active = !isCancelled && i === currentIdx && order.status !== "delivered";
                   return (
                     <div key={step} className="flex flex-col items-center text-center">
                       <div className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all ${
