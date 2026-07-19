@@ -40,6 +40,9 @@ type AppCtx = {
     deliveryFee?: number;
   }) => Order | null;
   reorder: (orderId: string) => string | null;
+  cancelOrder: (orderId: string) => boolean;
+  notificationsEnabled: boolean;
+  enableNotifications: () => Promise<boolean>;
 };
 
 const Ctx = createContext<AppCtx | null>(null);
