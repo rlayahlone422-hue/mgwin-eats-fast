@@ -97,8 +97,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setOrders((prev) => {
         let changed = false;
         const next = prev.map((o) => {
-          if (o.status === "delivered") return o;
-          const idx = ORDER_STEPS.indexOf(o.status);
+          if (o.status === "delivered" || o.status === "cancelled") return o;
+          const idx = ORDER_STEPS.indexOf(o.status as (typeof ORDER_STEPS)[number]);
+          if (idx < 0) return o;
           const elapsed = Date.now() - (o.statusHistory[o.statusHistory.length - 1]?.at ?? o.createdAt);
           if (elapsed < 15000) return o;
           const nextStatus = ORDER_STEPS[idx + 1];
