@@ -160,6 +160,7 @@ export const STATUS_LABELS: Record<OrderStatus, { mm: string; en: string }> = {
   preparing: { mm: "ချက်ပြုတ်နေသည်", en: "Preparing" },
   picked_up: { mm: "ဆိုင်ကယ်သမား ယူသွားပြီးပါပြီ", en: "Rider picked up" },
   delivered: { mm: "ရောက်ရှိပြီးပါပြီ", en: "Delivered" },
+  cancelled: { mm: "အော်ဒါ ပယ်ဖျက်ပြီး", en: "Order cancelled" },
 };
 
 export const PAYMENT_LABELS: Record<PaymentMethod, { mm: string; en: string }> = {
