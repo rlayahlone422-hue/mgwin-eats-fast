@@ -259,6 +259,17 @@ function OrderTracking() {
                 <p className={`mt-2 text-[11px] text-muted-foreground ${lang === "mm" ? "font-mm" : ""}`}>
                   {L({ mm: "မြေပုံကို နှိပ်၍ ချဲ့ကြည့်ပါ", en: "Tap the map to expand full-screen" })}
                 </p>
+                {mapsHref && (
+                  <a
+                    href={mapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mt-2 inline-flex items-center gap-2 rounded-full bg-gradient-ember text-primary-foreground px-4 py-2 text-xs font-semibold shadow-ember hover:scale-[1.02] transition-transform ${lang === "mm" ? "font-mm" : ""}`}
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    {L({ mm: "Google Maps ဖြင့် လမ်းညွှန်ရန်", en: "Open directions in Google Maps" })}
+                  </a>
+                )}
                 {order.distanceKm != null && (
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Bike className="w-3 h-3 text-primary" />
