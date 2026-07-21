@@ -82,8 +82,8 @@ function AdminHome() {
                 <div className="flex justify-between items-start">
                   <div className="min-w-0">
                     <div className="text-xs text-muted-foreground">Order #{d.order_id?.slice(0, 8) ?? "—"}</div>
-                    <div className="font-medium text-sm mt-1">{d.reason}</div>
-                    <p className="text-xs text-muted-foreground mt-1">{d.description}</p>
+                    <div className="font-medium text-sm mt-1">{d.type}</div>
+                    <p className="text-xs text-muted-foreground mt-1">{d.resolution ?? ""}</p>
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${d.status === "open" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>{d.status}</span>
                 </div>
