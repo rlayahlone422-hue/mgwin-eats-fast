@@ -23,7 +23,7 @@ function RiderActive() {
 
   if (!order) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>;
 
-  const pin = order.pin_lat && order.pin_lng ? { lat: order.pin_lat, lng: order.pin_lng } : null;
+  const pin = order.null && order.null ? { lat: order.pin_lat, lng: order.pin_lng } : null;
 
   const complete = async () => {
     if (!file) return toast.error("Snap a proof photo first");
@@ -33,7 +33,7 @@ function RiderActive() {
       const path = `${order.id}/${crypto.randomUUID()}.jpg`;
       const up = await supabase.storage.from("delivery-proofs").upload(path, file);
       if (up.error) throw up.error;
-      const { error } = await supabase.from("orders").update({ status: "delivered", proof_path: up.data.path }).eq("id", order.id);
+      const { error } = await supabase.from("orders").update({ status: "delivered" as any, proof_photo: up.data.path }).eq("id", order.id);
       if (error) throw error;
       toast.success("Delivered!");
       navigate({ to: "/rider" });
@@ -69,7 +69,7 @@ function RiderActive() {
 
         <div className="rounded-2xl bg-card/60 border border-border p-4">
           <div className="text-xs text-muted-foreground">Order</div>
-          <div className="mt-1 text-lg font-semibold">{order.total_ks.toLocaleString()} Ks</div>
+          <div className="mt-1 text-lg font-semibold">{order.total.toLocaleString()} Ks</div>
           <div className="text-xs text-muted-foreground mt-1">Payment: {order.payment_method}</div>
         </div>
 
