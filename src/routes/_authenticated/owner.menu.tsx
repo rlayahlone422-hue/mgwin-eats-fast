@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/owner/menu")({
   component: OwnerMenu,
 });
 
-type Item = { id: string; name_en: string; name_mm: string; price_ks: number; available: boolean; image_url: string | null; restaurant_id: string };
+type Item = { id: string; name_en: string; name_mm: string; price_ks: number; available: boolean; image: string | null; restaurant_id: string };
 type Rest = { id: string; name_en: string };
 
 function OwnerMenu() {
@@ -37,15 +37,15 @@ function OwnerMenu() {
     if (!rest) return toast.error("No restaurant linked to your account yet");
     setBusy(true);
     try {
-      let image_url: string | null = null;
+      let image: string | null = null;
       if (file) {
         const path = `${rest.id}/${crypto.randomUUID()}-${file.name}`;
         const up = await supabase.storage.from("menu-images").upload(path, file);
         if (up.error) throw up.error;
-        image_url = up.data.path;
+        image = up.data.path;
       }
       const { error } = await supabase.from("menu_items").insert({
-        restaurant_id: rest.id, name_en, name_mm, price_ks: Number(price), available: true, image_url,
+        restaurant_id: rest.id, name_en, name_mm, price: Number(price), available: true, image,
       });
       if (error) throw error;
       setNameEn(""); setNameMm(""); setPrice(""); setFile(null);
@@ -87,7 +87,7 @@ function OwnerMenu() {
             <div className="flex-1 min-w-0">
               <div className="font-medium truncate">{i.name_en}</div>
               <div className="text-xs text-muted-foreground truncate">{i.name_mm}</div>
-              <div className="text-sm text-primary">{i.price_ks.toLocaleString()} Ks</div>
+              <div className="text-sm text-primary">{i.price.toLocaleString()} Ks</div>
             </div>
             <button onClick={() => toggle(i)} className={`text-xs rounded-full px-3 py-1 border ${i.available ? "border-primary/40 text-primary bg-primary/10" : "border-border text-muted-foreground"}`}>
               {i.available ? "Available" : "Hidden"}

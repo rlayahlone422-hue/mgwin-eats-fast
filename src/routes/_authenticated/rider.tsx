@@ -50,7 +50,7 @@ function RiderHome() {
 
   const accept = async (id: string) => {
     if (!user) return;
-    const { error } = await supabase.from("orders").update({ rider_id: user.id, status: "picked_up" }).eq("id", id).is("rider_id", null);
+    const { error } = await supabase.from("orders").update({ rider_id: user.id, status: "picked_up" as any }).eq("id", id).is("rider_id", null);
     if (error) return toast.error(error.message);
     toast.success("Accepted — head to pickup");
     load();
@@ -101,7 +101,7 @@ function RiderHome() {
                   </div>
                   <div className="mt-1 text-sm font-medium flex items-center gap-1"><MapPin className="h-3 w-3" /> {o.address}</div>
                   <div className="mt-1 flex justify-between text-sm">
-                    <span>{o.total_ks.toLocaleString()} Ks</span>
+                    <span>{o.total.toLocaleString()} Ks</span>
                     <span className="flex items-center gap-1 text-primary">Open <ArrowRight className="h-3 w-3" /></span>
                   </div>
                 </Link>
@@ -123,7 +123,7 @@ function RiderHome() {
                     <span>{new Date(o.created_at).toLocaleTimeString()}</span>
                   </div>
                   <div className="mt-1 text-sm flex items-center gap-1"><MapPin className="h-3 w-3 text-primary" /> {o.address}</div>
-                  <div className="mt-1 text-sm text-primary">{o.delivery_fee_ks.toLocaleString()} Ks delivery</div>
+                  <div className="mt-1 text-sm text-primary">{o.delivery_fee.toLocaleString()} Ks delivery</div>
                   <button onClick={() => accept(o.id)} className="mt-2 w-full rounded-lg bg-gradient-ember py-2 text-sm font-medium text-primary-foreground">
                     Accept
                   </button>

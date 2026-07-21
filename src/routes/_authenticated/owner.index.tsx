@@ -44,7 +44,7 @@ function OwnerOrders() {
   }, []);
 
   const advance = async (o: Order, next: string) => {
-    const { error } = await supabase.from("orders").update({ status: next }).eq("id", o.id);
+    const { error } = await supabase.from("orders").update({ status: next as any }).eq("id", o.id);
     if (error) return toast.error(error.message);
     toast.success(`→ ${next}`);
   };
@@ -68,7 +68,7 @@ function OwnerOrders() {
                     <span>#{o.id.slice(0, 6)}</span>
                     <span>{new Date(o.created_at).toLocaleTimeString()}</span>
                   </div>
-                  <div className="mt-1 text-sm font-medium">{o.total_ks.toLocaleString()} Ks</div>
+                  <div className="mt-1 text-sm font-medium">{o.total.toLocaleString()} Ks</div>
                   <div className="text-xs text-muted-foreground mt-1 truncate">{o.phone}</div>
                   <div className="text-xs text-muted-foreground truncate">{o.address}</div>
                   {col.next && (
