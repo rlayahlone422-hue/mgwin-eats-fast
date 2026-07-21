@@ -37,7 +37,7 @@ function AdminHome() {
   useEffect(() => { load(); }, []);
 
   const resolve = async (id: string, status: "resolved" | "rejected") => {
-    const { error } = await supabase.from("disputes").update({ status, resolved_at: new Date().toISOString() }).eq("id", id);
+    const { error } = await supabase.from("disputes").update({ resolution: status, status: status as any }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Updated");
     load();

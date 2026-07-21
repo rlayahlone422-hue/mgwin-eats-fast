@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/owner/menu")({
   component: OwnerMenu,
 });
 
-type Item = { id: string; name_en: string; name_mm: string; price_ks: number; available: boolean; image: string | null; restaurant_id: string };
+type Item = { id: string; name_en: string; name_mm: string; price: number; available: boolean; image: string | null; restaurant_id: string };
 type Rest = { id: string; name_en: string };
 
 function OwnerMenu() {
