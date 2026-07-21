@@ -11,19 +11,19 @@ export const Route = createFileRoute("/_authenticated/owner/")({
 type Order = {
   id: string;
   status: string;
-  total_ks: number;
+  total: number;
   phone: string;
   address: string;
   created_at: string;
-  items: any;
 };
 
 const COLUMNS = [
-  { key: "placed", label: "New", next: "confirmed" },
-  { key: "confirmed", label: "Confirmed", next: "preparing" },
-  { key: "preparing", label: "Preparing", next: "ready" },
+  { key: "placed", label: "New", next: "confirmed" as const },
+  { key: "confirmed", label: "Confirmed", next: "preparing" as const },
+  { key: "preparing", label: "Preparing", next: "ready" as const },
   { key: "ready", label: "Ready", next: null },
 ] as const;
+
 
 function OwnerOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
