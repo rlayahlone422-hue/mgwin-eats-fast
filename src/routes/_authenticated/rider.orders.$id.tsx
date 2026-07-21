@@ -23,7 +23,7 @@ function RiderActive() {
 
   if (!order) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>;
 
-  const pin = order.null && order.null ? { lat: order.pin_lat, lng: order.pin_lng } : null;
+  const pin = order.pin && typeof order.pin === "object" ? (order.pin as { lat: number; lng: number }) : null;
 
   const complete = async () => {
     if (!file) return toast.error("Snap a proof photo first");
