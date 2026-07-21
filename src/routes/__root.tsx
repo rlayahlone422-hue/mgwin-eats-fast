@@ -106,14 +106,18 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 import { AppProvider } from "@/lib/mgwin-store";
+import { AuthProvider } from "@/lib/auth-context";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AppProvider>
-        <Outlet />
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <Outlet />
+        </AppProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
+
