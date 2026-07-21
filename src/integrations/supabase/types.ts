@@ -14,16 +14,435 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      dispute_messages: {
+        Row: {
+          body: string
+          created_at: string
+          dispute_id: string
+          id: string
+          sender_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          dispute_id: string
+          id?: string
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          dispute_id?: string
+          id?: string
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dispute_messages_dispute_id_fkey"
+            columns: ["dispute_id"]
+            isOneToOne: false
+            referencedRelation: "disputes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputes: {
+        Row: {
+          created_at: string
+          id: string
+          opened_by: string | null
+          order_id: string
+          refund_amount: number | null
+          resolution: string | null
+          status: Database["public"]["Enums"]["dispute_status"]
+          type: Database["public"]["Enums"]["dispute_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          opened_by?: string | null
+          order_id: string
+          refund_amount?: number | null
+          resolution?: string | null
+          status?: Database["public"]["Enums"]["dispute_status"]
+          type: Database["public"]["Enums"]["dispute_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          opened_by?: string | null
+          order_id?: string
+          refund_amount?: number | null
+          resolution?: string | null
+          status?: Database["public"]["Enums"]["dispute_status"]
+          type?: Database["public"]["Enums"]["dispute_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_items: {
+        Row: {
+          available: boolean
+          category_en: string | null
+          category_mm: string | null
+          created_at: string
+          desc_en: string | null
+          desc_mm: string | null
+          id: string
+          image: string | null
+          name_en: string
+          name_mm: string
+          price: number
+          restaurant_id: string
+        }
+        Insert: {
+          available?: boolean
+          category_en?: string | null
+          category_mm?: string | null
+          created_at?: string
+          desc_en?: string | null
+          desc_mm?: string | null
+          id?: string
+          image?: string | null
+          name_en: string
+          name_mm: string
+          price: number
+          restaurant_id: string
+        }
+        Update: {
+          available?: boolean
+          category_en?: string | null
+          category_mm?: string | null
+          created_at?: string
+          desc_en?: string | null
+          desc_mm?: string | null
+          id?: string
+          image?: string | null
+          name_en?: string
+          name_mm?: string
+          price?: number
+          restaurant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_events: {
+        Row: {
+          actor_id: string | null
+          at: string
+          id: string
+          note: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          actor_id?: string | null
+          at?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          actor_id?: string | null
+          at?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          id: string
+          menu_item_id: string | null
+          name_en: string
+          name_mm: string
+          notes: string | null
+          order_id: string
+          price: number
+          qty: number
+        }
+        Insert: {
+          id?: string
+          menu_item_id?: string | null
+          name_en: string
+          name_mm: string
+          notes?: string | null
+          order_id: string
+          price: number
+          qty: number
+        }
+        Update: {
+          id?: string
+          menu_item_id?: string | null
+          name_en?: string
+          name_mm?: string
+          notes?: string | null
+          order_id?: string
+          price?: number
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          customer_id: string | null
+          delivery_fee: number
+          distance_km: number | null
+          id: string
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          phone: string
+          pin: Json | null
+          proof_photo: string | null
+          restaurant_id: string
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          total: number
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          customer_id?: string | null
+          delivery_fee?: number
+          distance_km?: number | null
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          phone: string
+          pin?: Json | null
+          proof_photo?: string | null
+          restaurant_id: string
+          rider_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          total: number
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_id?: string | null
+          delivery_fee?: number
+          distance_km?: number | null
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          phone?: string
+          pin?: Json | null
+          proof_photo?: string | null
+          restaurant_id?: string
+          rider_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          lang: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          lang?: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          lang?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      restaurants: {
+        Row: {
+          address_en: string | null
+          address_mm: string | null
+          created_at: string
+          cuisine_en: string | null
+          cuisine_mm: string | null
+          delivery_min: number | null
+          id: string
+          image: string | null
+          is_open: boolean
+          lat: number | null
+          lng: number | null
+          name_en: string
+          name_mm: string
+          owner_id: string | null
+          rating: number | null
+        }
+        Insert: {
+          address_en?: string | null
+          address_mm?: string | null
+          created_at?: string
+          cuisine_en?: string | null
+          cuisine_mm?: string | null
+          delivery_min?: number | null
+          id?: string
+          image?: string | null
+          is_open?: boolean
+          lat?: number | null
+          lng?: number | null
+          name_en: string
+          name_mm: string
+          owner_id?: string | null
+          rating?: number | null
+        }
+        Update: {
+          address_en?: string | null
+          address_mm?: string | null
+          created_at?: string
+          cuisine_en?: string | null
+          cuisine_mm?: string | null
+          delivery_min?: number | null
+          id?: string
+          image?: string | null
+          is_open?: boolean
+          lat?: number | null
+          lng?: number | null
+          name_en?: string
+          name_mm?: string
+          owner_id?: string | null
+          rating?: number | null
+        }
+        Relationships: []
+      }
+      rider_shifts: {
+        Row: {
+          last_lat: number | null
+          last_lng: number | null
+          online: boolean
+          rider_id: string
+          updated_at: string
+        }
+        Insert: {
+          last_lat?: number | null
+          last_lng?: number | null
+          online?: boolean
+          rider_id: string
+          updated_at?: string
+        }
+        Update: {
+          last_lat?: number | null
+          last_lng?: number | null
+          online?: boolean
+          rider_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "customer" | "owner" | "rider" | "admin"
+      dispute_status: "open" | "investigating" | "resolved" | "rejected"
+      dispute_type:
+        | "cancelled"
+        | "delayed"
+        | "payment_issue"
+        | "wrong_item"
+        | "missing_item"
+        | "other"
+      order_status:
+        | "placed"
+        | "confirmed"
+        | "preparing"
+        | "ready"
+        | "picked_up"
+        | "delivered"
+        | "cancelled"
+      payment_method: "cash" | "kbzpay" | "wavepay"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +569,27 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["customer", "owner", "rider", "admin"],
+      dispute_status: ["open", "investigating", "resolved", "rejected"],
+      dispute_type: [
+        "cancelled",
+        "delayed",
+        "payment_issue",
+        "wrong_item",
+        "missing_item",
+        "other",
+      ],
+      order_status: [
+        "placed",
+        "confirmed",
+        "preparing",
+        "ready",
+        "picked_up",
+        "delivered",
+        "cancelled",
+      ],
+      payment_method: ["cash", "kbzpay", "wavepay"],
+    },
   },
 } as const
