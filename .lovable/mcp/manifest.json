@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://xjdhnfhsegbfvodngemn.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "mg-win",
+      "version": "0.1.0",
+      "title": "Mg Win"
+    },
+    "tools": [
+      {
+        "name": "list_restaurants",
+        "title": "List restaurants",
+        "description": "List restaurants on Mg Win (Namsang, Shan State). Optionally filter by a name/cuisine search term or to only open restaurants.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "search": {
+              "type": "string",
+              "description": "Match against restaurant name or cuisine."
+            },
+            "openOnly": {
+              "type": "boolean",
+              "description": "Only include restaurants currently open."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Max rows to return (default 20, max 50)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_restaurant_menu",
+        "title": "Get restaurant menu",
+        "description": "Get the menu of one restaurant: dish names (English and Burmese), category, description, availability and price in MMK.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "restaurantId": {
+              "type": "string",
+              "description": "Restaurant id from list_restaurants."
+            },
+            "availableOnly": {
+              "type": "boolean",
+              "description": "Only include items currently available."
+            }
+          },
+          "required": [
+            "restaurantId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_dishes",
+        "title": "Search dishes",
+        "description": "Search dishes across every Mg Win restaurant by name, in English or Burmese. Returns price in MMK and the owning restaurant id.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Dish name fragment, e.g. 'shan noodle' or 'မုန့်တီ'."
+            },
+            "maxPrice": {
+              "type": "number",
+              "description": "Only dishes at or below this price in MMK."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Max rows to return (default 20, max 50)."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_orders",
+        "title": "List my orders",
+        "description": "List the signed-in user's Mg Win orders, newest first, with status, payment method and totals in MMK.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Filter by order status, e.g. placed, preparing, delivered."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Max rows to return (default 10, max 50)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_order",
+        "title": "Get order detail",
+        "description": "Get one Mg Win order the signed-in user can access: line items, delivery details and the full status timeline.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "orderId": {
+              "type": "string",
+              "description": "Order id from list_my_orders."
+            }
+          },
+          "required": [
+            "orderId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
