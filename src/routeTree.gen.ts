@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -23,8 +24,12 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRiderRouteImport } from './routes/_authenticated/rider'
 import { Route as AuthenticatedOwnerRouteImport } from './routes/_authenticated/owner'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedOwnerIndexRouteImport } from './routes/_authenticated/owner.index'
 import { Route as AuthenticatedOwnerMenuRouteImport } from './routes/_authenticated/owner.menu'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedRiderOrdersIdRouteImport } from './routes/_authenticated/rider.orders.$id'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
@@ -40,6 +45,11 @@ const RestaurantsRoute = RestaurantsRouteImport.update({
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -96,6 +106,18 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedOwnerIndexRoute = AuthenticatedOwnerIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -105,6 +127,17 @@ const AuthenticatedOwnerMenuRoute = AuthenticatedOwnerMenuRouteImport.update({
   id: '/menu',
   path: '/menu',
   getParentRoute: () => AuthenticatedOwnerRoute,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRiderOrdersIdRoute =
   AuthenticatedRiderOrdersIdRouteImport.update({
@@ -118,15 +151,20 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/unauthorized': typeof UnauthorizedRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/owner': typeof AuthenticatedOwnerRouteWithChildren
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/owner/menu': typeof AuthenticatedOwnerMenuRoute
   '/owner/': typeof AuthenticatedOwnerIndexRoute
   '/rider/orders/$id': typeof AuthenticatedRiderOrdersIdRoute
@@ -136,14 +174,19 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/unauthorized': typeof UnauthorizedRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/owner/menu': typeof AuthenticatedOwnerMenuRoute
   '/owner': typeof AuthenticatedOwnerIndexRoute
   '/rider/orders/$id': typeof AuthenticatedRiderOrdersIdRoute
@@ -155,15 +198,20 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/unauthorized': typeof UnauthorizedRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/owner': typeof AuthenticatedOwnerRouteWithChildren
   '/_authenticated/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/owner/menu': typeof AuthenticatedOwnerMenuRoute
   '/_authenticated/owner/': typeof AuthenticatedOwnerIndexRoute
   '/_authenticated/rider/orders/$id': typeof AuthenticatedRiderOrdersIdRoute
@@ -175,15 +223,20 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/checkout'
+    | '/mcp'
     | '/orders'
     | '/restaurants'
     | '/unauthorized'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/owner'
     | '/rider'
     | '/admin/login'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/owner/menu'
     | '/owner/'
     | '/rider/orders/$id'
@@ -193,14 +246,19 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/checkout'
+    | '/mcp'
     | '/orders'
     | '/restaurants'
     | '/unauthorized'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/rider'
     | '/admin/login'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/owner/menu'
     | '/owner'
     | '/rider/orders/$id'
@@ -211,15 +269,20 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/checkout'
+    | '/mcp'
     | '/orders'
     | '/restaurants'
     | '/unauthorized'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/owner'
     | '/_authenticated/rider'
     | '/admin/login'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/owner/menu'
     | '/_authenticated/owner/'
     | '/_authenticated/rider/orders/$id'
@@ -231,10 +294,15 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
+  McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRouteWithChildren
   RestaurantsRoute: typeof RestaurantsRouteWithChildren
   UnauthorizedRoute: typeof UnauthorizedRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -258,6 +326,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -337,6 +412,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/owner/': {
       id: '/_authenticated/owner/'
       path: '/'
@@ -350,6 +439,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/owner/menu'
       preLoaderRoute: typeof AuthenticatedOwnerMenuRouteImport
       parentRoute: typeof AuthenticatedOwnerRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/rider/orders/$id': {
       id: '/_authenticated/rider/orders/$id'
@@ -429,10 +532,16 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
+  McpRoute: McpRoute,
   OrdersRoute: OrdersRouteWithChildren,
   RestaurantsRoute: RestaurantsRouteWithChildren,
   UnauthorizedRoute: UnauthorizedRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
