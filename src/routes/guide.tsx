@@ -4,7 +4,6 @@ import {
   ChevronRight, Star, Info,
 } from "lucide-react";
 
-import guideHero from "@/assets/guide-hero.jpg";
 import dishShan from "@/assets/dish-shan.jpg";
 import dishMohinga from "@/assets/dish-mohinga.jpg";
 import dishLahpet from "@/assets/dish-lahpet.jpg";
@@ -232,7 +231,7 @@ function GuidePage() {
 
           <div className="mt-14 relative rounded-3xl overflow-hidden shadow-soft ring-1 ring-border/50 animate-float-up" style={{ animationDelay: "0.2s" }}>
             <img
-              src={guideHero}
+              src="/guide-hero.jpg"
               alt="Burmese and Shan street food dishes in Namsang, Myanmar"
               width={1440}
               height={960}
