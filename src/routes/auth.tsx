@@ -7,6 +7,12 @@ import { useApp } from "@/lib/mgwin-store";
 import { Loader2, ChefHat, Bike, User } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next:
+      typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//")
+        ? s.next
+        : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Sign in — Mg Win" },
@@ -36,6 +42,7 @@ const T = {
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const { lang } = useApp();
   const t = (k: keyof typeof T) => T[k][lang];
   const [mode, setMode] = useState<"in" | "up">("in");
@@ -52,6 +59,7 @@ export default function AuthPage() {
   }, []);
 
   const routeByRole = async (uid: string) => {
+    if (next) { window.location.href = next; return; }
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     const roles = (data ?? []).map((r: any) => r.role);
     if (roles.includes("admin")) return navigate({ to: "/admin" });
@@ -67,7 +75,7 @@ export default function AuthPage() {
       if (mode === "up") {
         const { data, error } = await supabase.auth.signUp({
           email, password: pw,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: window.location.origin + (next ? `/auth?next=${encodeURIComponent(next)}` : "") },
         });
         if (error) throw error;
         if (data.user && role !== "customer") {
@@ -87,7 +95,7 @@ export default function AuthPage() {
 
   const google = async () => {
     setBusy(true);
-    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
+    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" + (next ? `?next=${encodeURIComponent(next)}` : "") });
     if (res.error) { toast.error(String(res.error)); setBusy(false); }
   };
 
