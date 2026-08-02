@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   MapPin, Clock, Flame, ChefHat, Utensils, ShoppingBag,
-  ChevronRight, Star, Info, Phone,
+  ChevronRight, Star, Info,
 } from "lucide-react";
 
 import guideHero from "@/assets/guide-hero.jpg";
@@ -512,7 +512,4 @@ function WalletIcon(props: { className?: string }) {
 }
 function ClockIcon(props: { className?: string }) {
   return <Clock {...props} />;
-}
-function PhoneIcon(props: { className?: string }) {
-  return <Phone {...props} />;
 }
