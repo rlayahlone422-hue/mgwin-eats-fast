@@ -19,6 +19,9 @@ export function AppHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
+          <Link to="/guide" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground font-semibold" }}>
+            {lang === "mm" ? "အစားအစာလမ်းညွှန်" : "Food guide"}
+          </Link>
           <Link to="/restaurants" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground font-semibold" }}>
             {lang === "mm" ? "ဆိုင်များ" : "Restaurants"}
           </Link>
