@@ -21,6 +21,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RestaurantsIdRouteImport } from './routes/restaurants.$id'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as DishesSlugRouteImport } from './routes/dishes.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRiderRouteImport } from './routes/_authenticated/rider'
 import { Route as AuthenticatedOwnerRouteImport } from './routes/_authenticated/owner'
@@ -91,6 +92,11 @@ const OrdersIdRoute = OrdersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => OrdersRoute,
+} as any)
+const DishesSlugRoute = DishesSlugRouteImport.update({
+  id: '/dishes/$slug',
+  path: '/dishes/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/owner': typeof AuthenticatedOwnerRouteWithChildren
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/_authenticated/owner': typeof AuthenticatedOwnerRouteWithChildren
   '/_authenticated/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/owner'
     | '/rider'
     | '/admin/login'
+    | '/dishes/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/rider'
     | '/admin/login'
+    | '/dishes/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -291,6 +302,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner'
     | '/_authenticated/rider'
     | '/admin/login'
+    | '/dishes/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  DishesSlugRoute: typeof DishesSlugRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -403,6 +416,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/orders/$id'
       preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof OrdersRoute
+    }
+    '/dishes/$slug': {
+      id: '/dishes/$slug'
+      path: '/dishes/$slug'
+      fullPath: '/dishes/$slug'
+      preLoaderRoute: typeof DishesSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
       id: '/admin/login'
@@ -561,6 +581,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
+  DishesSlugRoute: DishesSlugRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
