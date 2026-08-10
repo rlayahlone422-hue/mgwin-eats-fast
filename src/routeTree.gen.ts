@@ -21,6 +21,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RestaurantsIdRouteImport } from './routes/restaurants.$id'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as EatSlugRouteImport } from './routes/eat.$slug'
 import { Route as DishesSlugRouteImport } from './routes/dishes.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRiderRouteImport } from './routes/_authenticated/rider'
@@ -92,6 +93,11 @@ const OrdersIdRoute = OrdersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => OrdersRoute,
+} as any)
+const EatSlugRoute = EatSlugRouteImport.update({
+  id: '/eat/$slug',
+  path: '/eat/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DishesSlugRoute = DishesSlugRouteImport.update({
   id: '/dishes/$slug',
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/dishes/$slug': typeof DishesSlugRoute
+  '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/dishes/$slug': typeof DishesSlugRoute
+  '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/_authenticated/rider': typeof AuthenticatedRiderRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/dishes/$slug': typeof DishesSlugRoute
+  '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/rider'
     | '/admin/login'
     | '/dishes/$slug'
+    | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/rider'
     | '/admin/login'
     | '/dishes/$slug'
+    | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rider'
     | '/admin/login'
     | '/dishes/$slug'
+    | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
     | '/.lovable/oauth/consent'
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   DishesSlugRoute: typeof DishesSlugRoute
+  EatSlugRoute: typeof EatSlugRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -416,6 +429,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/orders/$id'
       preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof OrdersRoute
+    }
+    '/eat/$slug': {
+      id: '/eat/$slug'
+      path: '/eat/$slug'
+      fullPath: '/eat/$slug'
+      preLoaderRoute: typeof EatSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dishes/$slug': {
       id: '/dishes/$slug'
@@ -582,6 +602,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   DishesSlugRoute: DishesSlugRoute,
+  EatSlugRoute: EatSlugRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
