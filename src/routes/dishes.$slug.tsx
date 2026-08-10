@@ -3,10 +3,10 @@ import { Star, Clock, MapPin, ShoppingBag, ChevronRight, Utensils } from "lucide
 import { AppHeader } from "@/components/AppHeader";
 import { useApp } from "@/lib/mgwin-store";
 import { formatKs } from "@/lib/mgwin";
-import { DISH_PAGES, DISH_NOTES, absoluteUrl, getDishPage } from "@/lib/seo-pages";
+import { DISH_PAGES, DISH_NOTES, absoluteUrl, getDishPage, type DishPage, type DishOffer } from "@/lib/seo-pages";
 
 export const Route = createFileRoute("/dishes/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { dish: DishPage } => {
     const dish = getDishPage(params.slug);
     if (!dish) throw notFound();
     return { dish };
@@ -153,7 +153,7 @@ function DishPageView() {
             {L({ mm: "ဘယ်ဆိုင်မှာ ရနိုင်လဲ", en: `Where to order ${dish.name_en.toLowerCase()} in Namsang` })}
           </h2>
           <div className="grid sm:grid-cols-2 gap-5">
-            {dish.offers.map((o, i) => (
+            {dish.offers.map((o: DishOffer, i: number) => (
               <Link
                 key={o.item.id}
                 to="/restaurants/$id"
