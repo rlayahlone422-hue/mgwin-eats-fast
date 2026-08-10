@@ -19,6 +19,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DishesIndexRouteImport } from './routes/dishes.index'
 import { Route as RestaurantsIdRouteImport } from './routes/restaurants.$id'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
 import { Route as EatSlugRouteImport } from './routes/eat.$slug'
@@ -82,6 +83,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DishesIndexRoute = DishesIndexRouteImport.update({
+  id: '/dishes/',
+  path: '/dishes/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RestaurantsIdRoute = RestaurantsIdRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/dishes/': typeof DishesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/owner/menu': typeof AuthenticatedOwnerMenuRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/dishes': typeof DishesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/owner/menu': typeof AuthenticatedOwnerMenuRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/eat/$slug': typeof EatSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/restaurants/$id': typeof RestaurantsIdRoute
+  '/dishes/': typeof DishesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/owner/menu': typeof AuthenticatedOwnerMenuRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/dishes/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/owner/menu'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/dishes'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/owner/menu'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/eat/$slug'
     | '/orders/$id'
     | '/restaurants/$id'
+    | '/dishes/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/owner/menu'
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   DishesSlugRoute: typeof DishesSlugRoute
   EatSlugRoute: typeof EatSlugRoute
+  DishesIndexRoute: typeof DishesIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dishes/': {
+      id: '/dishes/'
+      path: '/dishes'
+      fullPath: '/dishes/'
+      preLoaderRoute: typeof DishesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/restaurants/$id': {
@@ -603,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   DishesSlugRoute: DishesSlugRoute,
   EatSlugRoute: EatSlugRoute,
+  DishesIndexRoute: DishesIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
