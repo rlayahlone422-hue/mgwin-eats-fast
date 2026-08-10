@@ -25,6 +25,9 @@ export function AppHeader() {
           <Link to="/restaurants" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground font-semibold" }}>
             {lang === "mm" ? "ဆိုင်များ" : "Restaurants"}
           </Link>
+          <Link to="/dishes" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground font-semibold" }}>
+            {lang === "mm" ? "အစားအစာများ" : "Dishes"}
+          </Link>
           <Link to="/orders" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground font-semibold" }}>
             {lang === "mm" ? "မှာယူမှတ်တမ်း" : "My orders"}
           </Link>
