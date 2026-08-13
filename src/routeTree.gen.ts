@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as GuideRouteImport } from './routes/guide'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
@@ -60,6 +61,11 @@ const OrdersRoute = OrdersRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuideRoute = GuideRouteImport.update({
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/guide': typeof GuideRoute
+  '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/guide': typeof GuideRoute
+  '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/guide': typeof GuideRoute
+  '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/guide'
+    | '/map'
     | '/mcp'
     | '/orders'
     | '/restaurants'
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/guide'
+    | '/map'
     | '/mcp'
     | '/orders'
     | '/restaurants'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/guide'
+    | '/map'
     | '/mcp'
     | '/orders'
     | '/restaurants'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   GuideRoute: typeof GuideRoute
+  MapRoute: typeof MapRoute
   McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRouteWithChildren
   RestaurantsRoute: typeof RestaurantsRouteWithChildren
@@ -405,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guide': {
@@ -633,6 +653,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   GuideRoute: GuideRoute,
+  MapRoute: MapRoute,
   McpRoute: McpRoute,
   OrdersRoute: OrdersRouteWithChildren,
   RestaurantsRoute: RestaurantsRouteWithChildren,
