@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -39,6 +40,11 @@ import { Route as AuthenticatedRiderOrdersIdRouteImport } from './routes/_authen
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
   path: '/unauthorized',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RestaurantsRoute = RestaurantsRouteImport.update({
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
   '/restaurants': typeof RestaurantsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/restaurants'
+    | '/sitemap.xml'
     | '/unauthorized'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/restaurants'
+    | '/sitemap.xml'
     | '/unauthorized'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/restaurants'
+    | '/sitemap.xml'
     | '/unauthorized'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -346,6 +358,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRouteWithChildren
   RestaurantsRoute: typeof RestaurantsRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -364,6 +377,13 @@ declare module '@tanstack/react-router' {
       path: '/unauthorized'
       fullPath: '/unauthorized'
       preLoaderRoute: typeof UnauthorizedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/restaurants': {
@@ -616,6 +636,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   OrdersRoute: OrdersRouteWithChildren,
   RestaurantsRoute: RestaurantsRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
