@@ -8,7 +8,7 @@ import { Bike, LogOut, Loader2, Power, MapPin, ArrowRight } from "lucide-react";
 export const Route = createFileRoute("/_authenticated/rider")({
   beforeLoad: async ({ context }: any) => {
     const uid = context.user?.id;
-    if (!uid) throw redirect({ to: "/auth" });
+    if (!uid) throw redirect({ to: "/auth", search: { next: undefined } });
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     const roles = (data ?? []).map((r: any) => r.role);
     if (!roles.includes("rider") && !roles.includes("admin")) throw redirect({ to: "/unauthorized" });

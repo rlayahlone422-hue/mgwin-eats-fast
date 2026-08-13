@@ -6,7 +6,7 @@ import { ChefHat, LogOut, Utensils, ClipboardList } from "lucide-react";
 export const Route = createFileRoute("/_authenticated/owner")({
   beforeLoad: async ({ context }: any) => {
     const uid = context.user?.id;
-    if (!uid) throw redirect({ to: "/auth" });
+    if (!uid) throw redirect({ to: "/auth", search: { next: undefined } });
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     const roles = (data ?? []).map((r: any) => r.role);
     if (!roles.includes("owner") && !roles.includes("admin")) throw redirect({ to: "/unauthorized" });
