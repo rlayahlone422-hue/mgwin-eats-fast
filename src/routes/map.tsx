@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Crosshair, Loader2, Locate, MapPin, Navigation, Radio, Star } from "lucide-react";
+import { Bike, Crosshair, Loader2, Locate, MapPin, Navigation, Radio, Star } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { NamsangMap } from "@/components/NamsangMap";
 import { useApp } from "@/lib/mgwin-store";
 import { useGps } from "@/hooks/use-gps";
+import { useRiderTrack } from "@/hooks/use-rider-track";
+import { isActiveOrder } from "@/lib/rider-track";
 import { NAMSANG_CENTER, computeDeliveryFee, estimateEta } from "@/lib/mgwin";
 import { directionsUrl, nearbyRestaurants } from "@/lib/namsang-map";
+
 
 export const Route = createFileRoute("/map")({
   component: NamsangMapPage,
@@ -30,14 +33,37 @@ export const Route = createFileRoute("/map")({
 });
 
 function NamsangMapPage() {
-  const { lang } = useApp();
+  const { lang, orders } = useApp();
   const gps = useGps();
   const [selected, setSelected] = useState<string | null>(null);
+  const [cuisine, setCuisine] = useState<string>("all");
+  const [openOnly, setOpenOnly] = useState(false);
 
   const origin = gps.point ?? NAMSANG_CENTER;
-  const shops = useMemo(() => nearbyRestaurants(origin), [origin.lat, origin.lng]);
+  const allShops = useMemo(() => nearbyRestaurants(origin), [origin.lat, origin.lng]);
   const mm = lang === "mm";
   const f = mm ? "font-mm" : "";
+
+  const cuisines = useMemo(() => {
+    const map = new Map<string, string>();
+    allShops.forEach((s) => map.set(s.cuisine_en, mm ? s.cuisine_mm : s.cuisine_en));
+    return [...map.entries()];
+  }, [allShops, mm]);
+
+  const shops = useMemo(
+    () =>
+      allShops.filter(
+        (s) => (cuisine === "all" || s.cuisine_en === cuisine) && (!openOnly || s.isOpen),
+      ),
+    [allShops, cuisine, openOnly],
+  );
+
+  const activeOrder = useMemo(
+    () => orders.find((o) => isActiveOrder(o)) ?? null,
+    [orders],
+  );
+  const riderTrack = useRiderTrack(activeOrder);
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,11 +106,73 @@ function NamsangMapPage() {
           {gps.error && <span className="text-xs text-destructive">{gps.error}</span>}
         </div>
 
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setCuisine("all")}
+            className={`h-8 px-3 rounded-full border text-xs transition-colors ${
+              cuisine === "all" ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-muted"
+            } ${f}`}
+          >
+            {mm ? "အားလုံး" : "All"}
+          </button>
+          {cuisines.map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setCuisine(key)}
+              className={`h-8 px-3 rounded-full border text-xs transition-colors ${
+                cuisine === key ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-muted"
+              } ${f}`}
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            onClick={() => setOpenOnly((v) => !v)}
+            className={`h-8 px-3 rounded-full border text-xs inline-flex items-center gap-1.5 transition-colors ${
+              openOnly ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-muted"
+            } ${f}`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${openOnly ? "bg-primary" : "bg-muted-foreground"}`} />
+            {mm ? "ဖွင့်ထားသည်" : "Open now"}
+          </button>
+          <span className="text-xs text-muted-foreground">
+            {shops.length}/{allShops.length}
+          </span>
+        </div>
+
+        {riderTrack && activeOrder && (
+          <Link
+            to="/orders/$id"
+            params={{ id: activeOrder.id }}
+            className="flex items-center gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-3 hover:border-primary transition-colors"
+          >
+            <span className="h-9 w-9 rounded-xl bg-gradient-ember flex items-center justify-center">
+              <Bike className="w-4 h-4 text-primary-foreground" />
+            </span>
+            <span className="min-w-0">
+              <span className={`block text-sm font-semibold ${f}`}>
+                {riderTrack.riding
+                  ? mm
+                    ? `ပို့ဆောင်သူ လမ်းပေါ် · ${riderTrack.minutesLeft} မိနစ်`
+                    : `Rider on the way · ~${riderTrack.minutesLeft} min`
+                  : mm
+                    ? "ဆိုင်တွင် ပြင်ဆင်နေသည်"
+                    : "Preparing at the shop"}
+              </span>
+              <span className={`block text-xs text-muted-foreground truncate ${f}`}>
+                {mm ? activeOrder.restaurantName_mm : activeOrder.restaurantName_en} · {activeOrder.id}
+              </span>
+            </span>
+          </Link>
+        )}
+
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-5">
           <div className="h-[58vh] lg:h-[560px]">
             <NamsangMap
               shops={shops}
               me={gps.point}
+              rider={riderTrack}
               selectedId={selected}
               onSelect={setSelected}
               lang={lang}
@@ -92,6 +180,7 @@ function NamsangMapPage() {
           </div>
 
           <div className="space-y-3 lg:max-h-[560px] lg:overflow-y-auto pr-1">
+
             {shops.map((s, i) => {
               const eta = estimateEta(s.liveDistanceKm);
               const fee = computeDeliveryFee(s.liveDistanceKm);
