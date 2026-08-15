@@ -33,14 +33,37 @@ export const Route = createFileRoute("/map")({
 });
 
 function NamsangMapPage() {
-  const { lang } = useApp();
+  const { lang, orders } = useApp();
   const gps = useGps();
   const [selected, setSelected] = useState<string | null>(null);
+  const [cuisine, setCuisine] = useState<string>("all");
+  const [openOnly, setOpenOnly] = useState(false);
 
   const origin = gps.point ?? NAMSANG_CENTER;
-  const shops = useMemo(() => nearbyRestaurants(origin), [origin.lat, origin.lng]);
+  const allShops = useMemo(() => nearbyRestaurants(origin), [origin.lat, origin.lng]);
   const mm = lang === "mm";
   const f = mm ? "font-mm" : "";
+
+  const cuisines = useMemo(() => {
+    const map = new Map<string, string>();
+    allShops.forEach((s) => map.set(s.cuisine_en, mm ? s.cuisine_mm : s.cuisine_en));
+    return [...map.entries()];
+  }, [allShops, mm]);
+
+  const shops = useMemo(
+    () =>
+      allShops.filter(
+        (s) => (cuisine === "all" || s.cuisine_en === cuisine) && (!openOnly || s.isOpen),
+      ),
+    [allShops, cuisine, openOnly],
+  );
+
+  const activeOrder = useMemo(
+    () => orders.find((o) => isActiveOrder(o)) ?? null,
+    [orders],
+  );
+  const riderTrack = useRiderTrack(activeOrder);
+
 
   return (
     <div className="min-h-screen bg-background">
