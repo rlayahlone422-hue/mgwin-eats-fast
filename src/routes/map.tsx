@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Crosshair, Loader2, Locate, MapPin, Navigation, Radio, Star } from "lucide-react";
+import { Bike, Crosshair, Loader2, Locate, MapPin, Navigation, Radio, Star } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { NamsangMap } from "@/components/NamsangMap";
 import { useApp } from "@/lib/mgwin-store";
 import { useGps } from "@/hooks/use-gps";
+import { useRiderTrack } from "@/hooks/use-rider-track";
+import { isActiveOrder } from "@/lib/rider-track";
 import { NAMSANG_CENTER, computeDeliveryFee, estimateEta } from "@/lib/mgwin";
 import { directionsUrl, nearbyRestaurants } from "@/lib/namsang-map";
+
 
 export const Route = createFileRoute("/map")({
   component: NamsangMapPage,
