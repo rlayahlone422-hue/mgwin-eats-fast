@@ -31,7 +31,6 @@ export const Route = createFileRoute("/restaurants/$id")({
         { property: "og:url", content: url },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
-        ...(r?.image ? [{ property: "og:image", content: r.image }, { name: "twitter:image", content: r.image }] : []),
       ],
       links: [{ rel: "canonical", href: url }],
     };
