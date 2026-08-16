@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
+import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MapRouteImport } from './routes/map'
@@ -51,6 +52,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RestaurantsRoute = RestaurantsRouteImport.update({
   id: '/restaurants',
   path: '/restaurants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerRoute = PartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrdersRoute = OrdersRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
+  '/partner': typeof PartnerRoute
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
+  '/partner': typeof PartnerRoute
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRouteWithChildren
+  '/partner': typeof PartnerRoute
   '/restaurants': typeof RestaurantsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/mcp'
     | '/orders'
+    | '/partner'
     | '/restaurants'
     | '/sitemap.xml'
     | '/unauthorized'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/mcp'
     | '/orders'
+    | '/partner'
     | '/restaurants'
     | '/sitemap.xml'
     | '/unauthorized'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/mcp'
     | '/orders'
+    | '/partner'
     | '/restaurants'
     | '/sitemap.xml'
     | '/unauthorized'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRouteWithChildren
+  PartnerRoute: typeof PartnerRoute
   RestaurantsRoute: typeof RestaurantsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/restaurants'
       fullPath: '/restaurants'
       preLoaderRoute: typeof RestaurantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partner': {
+      id: '/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof PartnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orders': {
@@ -656,6 +676,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   McpRoute: McpRoute,
   OrdersRoute: OrdersRouteWithChildren,
+  PartnerRoute: PartnerRoute,
   RestaurantsRoute: RestaurantsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UnauthorizedRoute: UnauthorizedRoute,
