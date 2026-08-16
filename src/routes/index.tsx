@@ -113,7 +113,7 @@ function Landing() {
               <Link to="/partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
                 <Store className="w-4 h-4" />
                 {L(t.hero.partner)}
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl">
