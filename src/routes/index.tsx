@@ -110,7 +110,7 @@ function Landing() {
                 {L(t.hero.order)}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href="#partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
+              <Link to="/partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
                 <Store className="w-4 h-4" />
                 {L(t.hero.partner)}
               </a>
