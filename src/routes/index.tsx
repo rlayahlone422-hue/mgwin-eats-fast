@@ -11,8 +11,26 @@ import dishLahpet from "@/assets/dish-lahpet.jpg";
 import { AppHeader } from "@/components/AppHeader";
 import { useApp } from "@/lib/mgwin-store";
 
+const HOME_TITLE = "Mg Win — Food Delivery in Namsang, Southern Shan State";
+const HOME_DESCRIPTION =
+  "Order Shan noodles, mohinga, tea-leaf salad and more from Namsang's best kitchens and market stalls. Motorbike delivery in about 20 minutes, prices in Kyat, pay by cash, KBZPay or Wave Pay.";
+const HOME_URL = "https://mgwin-eats-fast.lovable.app/";
+
 export const Route = createFileRoute("/")({
   component: Landing,
+  head: () => ({
+    meta: [
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESCRIPTION },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: HOME_URL },
+      { name: "twitter:title", content: HOME_TITLE },
+      { name: "twitter:description", content: HOME_DESCRIPTION },
+    ],
+    links: [{ rel: "canonical", href: HOME_URL }],
+  }),
 });
 
 const t = {
@@ -92,10 +110,10 @@ function Landing() {
                 {L(t.hero.order)}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href="#partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
+              <Link to="/partner" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-7 py-3.5 text-sm font-semibold hover:bg-card transition-colors">
                 <Store className="w-4 h-4" />
                 {L(t.hero.partner)}
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl">
@@ -291,7 +309,7 @@ function Landing() {
             <p className={`mt-4 text-primary-foreground/80 max-w-xl mx-auto ${lang === "mm" ? "font-mm" : ""}`}>{L(t.cta_sub)}</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Link to="/restaurants" className="rounded-full bg-background text-foreground px-7 py-3.5 text-sm font-semibold hover:scale-105 transition-transform">{L(t.cta_btn)}</Link>
-              <a id="partner" href="#" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">{L(t.cta_btn2)}</a>
+              <Link to="/partner" id="partner" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">{L(t.cta_btn2)}</Link>
             </div>
           </div>
         </div>

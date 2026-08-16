@@ -6,7 +6,17 @@ import { formatKs, getMenuItem, getRestaurant } from "@/lib/mgwin";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
-  head: () => ({ meta: [{ title: "Cart — Mg Win" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your Cart — Mg Win Namsang" },
+      { name: "description", content: "Review your Mg Win order, adjust quantities and add notes such as \"not spicy\" before checkout." },
+      { name: "robots", content: "noindex, follow" },
+      { property: "og:title", content: "Your Cart — Mg Win Namsang" },
+      { property: "og:description", content: "Review your Mg Win order before checkout." },
+      { property: "og:url", content: "https://mgwin-eats-fast.lovable.app/cart" },
+    ],
+    links: [{ rel: "canonical", href: "https://mgwin-eats-fast.lovable.app/cart" }],
+  }),
 });
 
 function CartPage() {
