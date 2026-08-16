@@ -288,6 +288,39 @@ export type Database = {
           },
         ]
       }
+      partner_leads: {
+        Row: {
+          business_name: string
+          created_at: string
+          cuisine: string | null
+          id: string
+          location: string | null
+          message: string | null
+          owner_name: string | null
+          phone: string
+        }
+        Insert: {
+          business_name: string
+          created_at?: string
+          cuisine?: string | null
+          id?: string
+          location?: string | null
+          message?: string | null
+          owner_name?: string | null
+          phone: string
+        }
+        Update: {
+          business_name?: string
+          created_at?: string
+          cuisine?: string | null
+          id?: string
+          location?: string | null
+          message?: string | null
+          owner_name?: string | null
+          phone?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
