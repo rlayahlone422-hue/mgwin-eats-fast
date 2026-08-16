@@ -309,7 +309,7 @@ function Landing() {
             <p className={`mt-4 text-primary-foreground/80 max-w-xl mx-auto ${lang === "mm" ? "font-mm" : ""}`}>{L(t.cta_sub)}</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Link to="/restaurants" className="rounded-full bg-background text-foreground px-7 py-3.5 text-sm font-semibold hover:scale-105 transition-transform">{L(t.cta_btn)}</Link>
-              <a id="partner" href="#" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">{L(t.cta_btn2)}</a>
+              <Link to="/partner" id="partner" className="rounded-full border-2 border-primary-foreground/30 text-primary-foreground px-7 py-3.5 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors">{L(t.cta_btn2)}</Link>
             </div>
           </div>
         </div>
