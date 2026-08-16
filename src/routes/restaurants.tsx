@@ -5,9 +5,26 @@ import { AppHeader } from "@/components/AppHeader";
 import { useApp, RESTAURANTS } from "@/lib/mgwin-store";
 import { formatKs } from "@/lib/mgwin";
 
+const LIST_TITLE = "Restaurants & Stalls in Namsang — Menus, Prices, Delivery | Mg Win";
+const LIST_DESCRIPTION =
+  "Browse every Namsang kitchen, tea shop and market stall on Mg Win: opening status, ratings, delivery fee in Kyat and estimated delivery time before you order.";
+const LIST_URL = "https://mgwin-eats-fast.lovable.app/restaurants";
+
 export const Route = createFileRoute("/restaurants")({
   component: RestaurantsPage,
-  head: () => ({ meta: [{ title: "Restaurants — Mg Win" }] }),
+  head: () => ({
+    meta: [
+      { title: LIST_TITLE },
+      { name: "description", content: LIST_DESCRIPTION },
+      { property: "og:title", content: LIST_TITLE },
+      { property: "og:description", content: LIST_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: LIST_URL },
+      { name: "twitter:title", content: LIST_TITLE },
+      { name: "twitter:description", content: LIST_DESCRIPTION },
+    ],
+    links: [{ rel: "canonical", href: LIST_URL }],
+  }),
 });
 
 function RestaurantsPage() {
