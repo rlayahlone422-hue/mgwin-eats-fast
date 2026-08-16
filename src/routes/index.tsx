@@ -11,8 +11,26 @@ import dishLahpet from "@/assets/dish-lahpet.jpg";
 import { AppHeader } from "@/components/AppHeader";
 import { useApp } from "@/lib/mgwin-store";
 
+const HOME_TITLE = "Mg Win — Food Delivery in Namsang, Southern Shan State";
+const HOME_DESCRIPTION =
+  "Order Shan noodles, mohinga, tea-leaf salad and more from Namsang's best kitchens and market stalls. Motorbike delivery in about 20 minutes, prices in Kyat, pay by cash, KBZPay or Wave Pay.";
+const HOME_URL = "https://mgwin-eats-fast.lovable.app/";
+
 export const Route = createFileRoute("/")({
   component: Landing,
+  head: () => ({
+    meta: [
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESCRIPTION },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: HOME_URL },
+      { name: "twitter:title", content: HOME_TITLE },
+      { name: "twitter:description", content: HOME_DESCRIPTION },
+    ],
+    links: [{ rel: "canonical", href: HOME_URL }],
+  }),
 });
 
 const t = {
