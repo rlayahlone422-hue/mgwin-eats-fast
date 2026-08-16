@@ -64,6 +64,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "CtL9iUyMXDGFOWhfUXoOxPOkY1yA4lxlyxQBOcAxAfo" },
       { title: "Mg Win — Food Delivery in Namsang, Shan State" },
       { name: "description", content: "Mg Win is the local food delivery service for Namsang, southern Shan State: order from town kitchens, tea shops and market stalls with motorbike delivery and cash, KBZPay or Wave Pay." },
       { property: "og:site_name", content: "Mg Win" },
