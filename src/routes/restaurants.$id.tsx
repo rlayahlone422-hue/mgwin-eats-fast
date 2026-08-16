@@ -12,9 +12,30 @@ export const Route = createFileRoute("/restaurants/$id")({
     if (!r) throw notFound();
     return { restaurant: r, menu: getMenuByRestaurant(params.id) };
   },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.restaurant.name_en} — Mg Win` : "Restaurant — Mg Win" }],
-  }),
+  head: ({ params, loaderData }) => {
+    const r = loaderData?.restaurant;
+    const title = r
+      ? `${r.name_en} — ${r.cuisine_en} in Namsang, Menu & Delivery | Mg Win`
+      : "Restaurant in Namsang — Menu & Delivery | Mg Win";
+    const description = r
+      ? `${r.name_en} (${r.name_mm}) in ${r.address_en}, Namsang: ${r.cuisine_en} menu with prices in Kyat, ${r.rating}★ rating and motorbike delivery from Mg Win.`
+      : "See the menu, prices in Kyat and delivery details for this Namsang kitchen on Mg Win.";
+    const url = `https://mgwin-eats-fast.lovable.app/restaurants/${params.id}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "restaurant" },
+        { property: "og:url", content: url },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(r?.image ? [{ property: "og:image", content: r.image }, { name: "twitter:image", content: r.image }] : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
