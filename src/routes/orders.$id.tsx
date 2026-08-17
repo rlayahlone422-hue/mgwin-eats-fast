@@ -47,6 +47,7 @@ function OrderTracking() {
   const pinDisplayLabel = pinLabel(order.pin, lang);
   const canCancel = order.status === "placed";
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const track = useRiderTrack(order);
 
   const mapsHref = order.pin
     ? `https://www.google.com/maps/dir/?api=1&destination=${order.pin.lat},${order.pin.lng}&travelmode=driving`
