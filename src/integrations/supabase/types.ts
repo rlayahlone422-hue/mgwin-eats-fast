@@ -399,6 +399,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rider_health_checkins: {
+        Row: {
+          created_at: string
+          energy_level: Database["public"]["Enums"]["energy_level"]
+          hours_since_break: number
+          id: string
+          note: string | null
+          rider_id: string
+        }
+        Insert: {
+          created_at?: string
+          energy_level: Database["public"]["Enums"]["energy_level"]
+          hours_since_break?: number
+          id?: string
+          note?: string | null
+          rider_id: string
+        }
+        Update: {
+          created_at?: string
+          energy_level?: Database["public"]["Enums"]["energy_level"]
+          hours_since_break?: number
+          id?: string
+          note?: string | null
+          rider_id?: string
+        }
+        Relationships: []
+      }
       rider_shifts: {
         Row: {
           last_lat: number | null
@@ -467,6 +494,7 @@ export type Database = {
         | "wrong_item"
         | "missing_item"
         | "other"
+      energy_level: "good" | "tired" | "exhausted"
       order_status:
         | "placed"
         | "confirmed"
@@ -613,6 +641,7 @@ export const Constants = {
         "missing_item",
         "other",
       ],
+      energy_level: ["good", "tired", "exhausted"],
       order_status: [
         "placed",
         "confirmed",
