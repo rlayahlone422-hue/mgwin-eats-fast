@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck, Navigation, XCircle, Bell, BellOff } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPreview } from "@/components/MapPreview";
+import { RiderTrackMap } from "@/components/RiderTrackMap";
+import { useRiderTrack } from "@/hooks/use-rider-track";
 import { useApp } from "@/lib/mgwin-store";
 import { formatKs, ORDER_STEPS, STATUS_LABELS, PAYMENT_LABELS, estimateEta, pinLabel, type OrderStatus } from "@/lib/mgwin";
 
