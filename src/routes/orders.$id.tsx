@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ArrowLeft, Check, Phone, MapPin, Wallet, RotateCcw, Receipt, Clock, Flame, Bike, ChefHat, ShoppingBag, PackageCheck, Navigation, XCircle, Bell, BellOff } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { MapPreview } from "@/components/MapPreview";
+import { RiderTrackMap } from "@/components/RiderTrackMap";
+import { useRiderTrack } from "@/hooks/use-rider-track";
 import { useApp } from "@/lib/mgwin-store";
 import { formatKs, ORDER_STEPS, STATUS_LABELS, PAYMENT_LABELS, estimateEta, pinLabel, type OrderStatus } from "@/lib/mgwin";
 
@@ -45,6 +47,7 @@ function OrderTracking() {
   const pinDisplayLabel = pinLabel(order.pin, lang);
   const canCancel = order.status === "placed";
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const track = useRiderTrack(order);
 
   const mapsHref = order.pin
     ? `https://www.google.com/maps/dir/?api=1&destination=${order.pin.lat},${order.pin.lng}&travelmode=driving`
@@ -244,6 +247,74 @@ function OrderTracking() {
           </div>
         </div>
         )}
+
+
+
+        {/* Live rider tracking */}
+        {!isCancelled && track && (
+          <div className="mt-4 rounded-2xl bg-card border border-border p-5 animate-float-up">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 className={`font-semibold flex items-center gap-2 ${lang === "mm" ? "font-mm" : ""}`}>
+                <Bike className="w-4 h-4 text-primary" />
+                {L({ mm: "ပို့ဆောင်သူ တိုက်ရိုက် တည်နေရာ", en: "Live rider tracking" })}
+              </h2>
+              <span
+                className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest ${
+                  track.riding ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+                } ${lang === "mm" ? "font-mm" : ""}`}
+              >
+                {track.riding
+                  ? L({ mm: "လမ်းပေါ်", en: "On the way" })
+                  : order.status === "delivered"
+                    ? L({ mm: "ရောက်ရှိပြီး", en: "Delivered" })
+                    : L({ mm: "ဆိုင်တွင် စောင့်နေသည်", en: "At the shop" })}
+              </span>
+            </div>
+
+            <RiderTrackMap
+              track={track}
+              lang={lang}
+              height={230}
+              waitingLabel={
+                order.status === "delivered"
+                  ? (lang === "mm" ? "ပို့ဆောင်ပြီးပါပြီ" : "Order delivered")
+                  : undefined
+              }
+            />
+
+            {/* Drop-off progress */}
+            <div className="mt-4">
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-ember transition-all duration-700 ease-out"
+                  style={{ width: `${Math.round(track.progress * 100)}%` }}
+                />
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                <span className={`flex items-center gap-1 ${lang === "mm" ? "font-mm" : ""}`}>
+                  <ChefHat className="w-3 h-3 text-primary" />
+                  {L({ mm: "ဆိုင်", en: "Shop" })}
+                </span>
+                <span className="font-mono text-foreground">{Math.round(track.progress * 100)}%</span>
+                <span className={`flex items-center gap-1 ${lang === "mm" ? "font-mm" : ""}`}>
+                  <MapPin className="w-3 h-3 text-accent" />
+                  {pinDisplayLabel || L({ mm: "ပို့ဆောင်ရမည့်နေရာ", en: "Drop-off" })}
+                </span>
+              </div>
+            </div>
+
+            {track.riding && (
+              <div className={`mt-3 flex items-center gap-2 rounded-xl bg-primary/10 border border-primary/25 px-3 py-2 text-xs text-primary ${lang === "mm" ? "font-mm" : ""}`}>
+                <Clock className="w-3.5 h-3.5" />
+                {lang === "mm"
+                  ? `ပို့ဆောင်သူ ${track.minutesLeft} မိနစ်အတွင်း ရောက်ပါမည်`
+                  : `Rider arrives in about ${track.minutesLeft} min`}
+              </div>
+            )}
+          </div>
+        )}
+
+
 
 
 
